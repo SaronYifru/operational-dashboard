@@ -18,7 +18,7 @@
             src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.js"></script>
 
     <script type="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/"></script>
-    <link rel="import" href="./settingsModal.html">
+
     <asset:stylesheet src="/OperationalDashboard/homeStyle2.css"/>
     <asset:stylesheet src="/OperationalDashboard/homeStyle.css"/>
     <title>Operational Dashboard</title>

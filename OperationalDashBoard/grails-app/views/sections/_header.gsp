@@ -1,5 +1,6 @@
+
 <nav class="navbar navbar-default navbar-fixed-top row" role="banner">
-    <div class="container">
+    <div class="container-fluid">
         <div class="navbar-header">
             <button class="navbar-toggle" type="button" data-toggle="collapse"
                     data-target=".navbar-collapse">
@@ -12,11 +13,19 @@
         </div>
         <nav class="collapse navbar-collapse" role="navigation">
             <ul class="nav navbar-nav">
-                <li><a data-toggle="modal" data-target="#settingsModal"> <span
-                        class="glyphicon glyphicon-cog"></span>Settings
-                </a></li>
+                <li class="dropdown"><a id="settingsMenu" data-toggle="dropdown" > <span
+                        class="glyphicon glyphicon-cog"></span>Settings</a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="settingsMenu">
+                        <li role="presentation"><a data-toggle="modal" data-target="#settingsModal" role="menuitem" tabindex="-1" href="#">Upload Focus Customers</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Upload Request Types</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Upload Person to Owner Group</a></li>
+
+                    </ul>
+                </li>
+
             </ul>
         </nav>
-
     </div>
 </nav>
+<g:render template="/settings"/>
+

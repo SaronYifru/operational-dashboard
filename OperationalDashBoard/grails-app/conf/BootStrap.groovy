@@ -83,7 +83,7 @@ class BootStrap {
 
                def activity = new ODActivities(ticketID:
                         id, summary: summary, status: status, priority: priority, actualStart: actualStart, statusDate: statusDate, personName: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
-                        customer: spec.get("customer"), requestType: ODRequestType.findByName(spec.get("request")), relatedRecord: relatedRecord)
+                        customer: spec.get("customer"), requestType: spec.get("request"), relatedRecord: relatedRecord)
                 activity.save(failOnError: true)
 
                 for (log in logs) {

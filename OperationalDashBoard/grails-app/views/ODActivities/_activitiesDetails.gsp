@@ -3,6 +3,7 @@
     <table class="table table-striped display table-expandable" cellspacing="0" width="100%" id="activitiesTable">
         <thead>
         <tr>
+            <th></th>
             <th><a href="#" >Ticket #</a></th>
             <th><a>Summary</a></th>
             <th><a>Status</a></th>
@@ -18,11 +19,10 @@
             <th><a>Worklog</a></th>
             <th><a>Alerts</a></th>
             <th><a>Related Record</a></th>
-        </tr>
 
-        </thead>
-        <tfoot>
+        </tr>
         <tr>
+            <th></th>
             <th>Ticket #</th>
             <th>Summary</th>
             <th>Status</th>
@@ -38,13 +38,15 @@
             <th>Worklog</th>
             <th>Alerts</th>
             <th><a>Related Record</a></th>
-        </tr>
 
-        </tfoot>
-        <tbody>
+        </tr>
+        </thead>
+
+
+
             <g:each in="${activities}"  var="activity">
         <tr>
-            %{--<td data-toggle="modal" data-target="#myModal" ng-click="selectedTicket = index" ng-bind="activity.ticket"></td>--}%
+            <td></td>
             <td data-toggle="modal" data-target="#myModal">${activity.ticketID}</td>
             <td data-resizable-column-id="summary">${activity.summary}</td>
             <td>${activity.status}</td>
@@ -60,12 +62,10 @@
             <td>${activity.worklogs.isEmpty()? "No" : "Yes"}</td>
             <td title="Alert Reason">${(new Date() - activity.statusDate) > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>
             <td><a href="#openProblemTicket">${activity.relatedRecord}</a></td>
-
-
-        </tr>
-
-        </g:each>
+            </tr>
+            </g:each>
         </tbody>
 
     </table>
+
 </div>

@@ -1,15 +1,16 @@
-table.table-expandable > tbody > tr:nth-child(odd) {
+td.details-control {
+    /*background: url('/examples/resources/details_open.png') no-repeat center center;*/
     cursor: pointer;
 }
 
-table.table-expandable.table-hover > tbody > tr:nth-child(even):hover td {
-    background-color: white;
+tr.shown td.details-control {
+    /*background: url('/examples/resources/details_close.png') no-repeat center center;*/
 }
 
-table.table-expandable > tbody > tr div.table-expandable-arrow {
-    background:transparent url(../../images/operationaldashboard/arrows.png) no-repeat scroll 0px -16px; width:16px; height:16px; display:block;
+div.slider {
+    display: none;
 }
 
-table.table-expandable > tbody > tr div.table-expandable-arrow.up {
-    background-position:0px 0px;
+table.dataTable tbody td.no-padding {
+    padding: 0;
 }

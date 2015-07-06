@@ -16,7 +16,7 @@ class ODActivities {
     String env
     String customer
     String relatedRecord
-    ODRequestType requestType
+    String requestType
     static hasMany = [worklogs:ODWorklog]
     static constraints = {
         ticketID unique:true
@@ -25,7 +25,7 @@ class ODActivities {
         personName blank: true
         responsibleGroup blank: true, nullable:true
         ownerGroup blank: true, nullable: true
-        requestType nullable: true
+        requestType blank: true, nullable: true
         env blank:true, nullable:true
         priority nullable: true
     }
