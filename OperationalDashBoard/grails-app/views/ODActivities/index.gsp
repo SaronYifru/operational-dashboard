@@ -79,7 +79,7 @@
     <g:render template="filters"/>
     <g:render template="activitiesDetails" model="[activities: activities]"/>
 </div>
-
+<h2>Testing subversion</h2>
 %{--<g:render template="/sections/footer"/>--}%
 %{--</div>--}%
 
