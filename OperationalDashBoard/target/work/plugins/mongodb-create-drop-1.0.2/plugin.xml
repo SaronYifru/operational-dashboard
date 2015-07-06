@@ -1,0 +1,25 @@
+<plugin name='mongodb-create-drop' version='1.0.2' grailsVersion='2.0 &gt; *'>
+  <author>Paul Osborne</author>
+  <authorEmail>hello@paulosborne.me.uk</authorEmail>
+  <title>MongoDB Create-Drop</title>
+  <description>Provides applications using MongoDB with the ability to mimic the "create-drop" behaviour available for other databases.</description>
+  <documentation>https://github.com/enrobsop/grails-mongodb-create-drop/wiki</documentation>
+  <type>MongodbCreateDropGrailsPlugin</type>
+  <resources />
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+  </repositories>
+  <dependencies>
+    <test>
+      <dependency group='org.spockframework' name='spock-grails-support' version='0.7-groovy-2.0' />
+    </test>
+  </dependencies>
+  <plugins>
+    <compile>
+      <plugin group='org.grails.plugins' name='mongodb' version='1.2.0' />
+    </compile>
+  </plugins>
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

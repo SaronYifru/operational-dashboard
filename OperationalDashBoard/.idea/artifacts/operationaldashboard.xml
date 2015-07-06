@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="operationaldashboard">
+    <output-path>$PROJECT_DIR$/out/artifacts/operationaldashboard</output-path>
+    <root id="archive" name="operationaldashboard.war">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="OperationalDashBoard-grailsPlugins" />
+          <element id="module-output" name="OperationalDashBoard" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="Grails User Library (OperationalDashBoard-grailsPlugins)" module-name="OperationalDashBoard-grailsPlugins" />
+          <element id="library" level="application" name="grails-2.5.0" />
+          <element id="library" level="module" name="Grails User Library (OperationalDashBoard)" module-name="OperationalDashBoard" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="OperationalDashBoard-grailsPlugins/web/GrailsWeb" />
+      <element id="javaee-facet-resources" facet="OperationalDashBoard/web/GrailsWeb" />
+    </root>
+  </artifact>
+</component>
