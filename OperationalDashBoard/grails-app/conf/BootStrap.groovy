@@ -48,7 +48,7 @@ class BootStrap {
             CSVRecord csvRecord = customers.get(index)
             if(isValidRecord(csvRecord)) {
                 log.info(csvRecord)
-                new ODCustomer(name: csvRecord.get(0)).save(failOnError: true)
+                new ODCustomer(name: csvRecord.get(0).trim()).save(failOnError: true)
             }
         }
 

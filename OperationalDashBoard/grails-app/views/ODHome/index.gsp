@@ -21,13 +21,16 @@
 
     <asset:stylesheet src="/OperationalDashboard/homeStyle2.css"/>
     <asset:stylesheet src="/OperationalDashboard/homeStyle.css"/>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
     <title>Operational Dashboard</title>
 </head>
 
 <body>
 <g:render template="/sections/header"/>
     <div class="container">
-        <g:render template="/ODHome/tabs"/>
+        <g:render template="/ODHome/tabs" model="[summary: summary]"/>
+
     </div>
     %{--<g:render template="/sections/footer"/>--}%
     %{--</div>--}%

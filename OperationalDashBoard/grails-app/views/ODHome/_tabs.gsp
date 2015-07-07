@@ -13,7 +13,7 @@
     <div class="tab-pane fade" id="summary">
             <div class="row">
                     <h1 id="alerts" class="page-header">Summary</h1>
-                    %{--<g:render template="/ODAlerts/alert"></g:render>--}%
+                    <g:render template="/ODHome/summary" model="[summary: summary]"></g:render>
             </div>
     </div>
 </div>

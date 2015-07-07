@@ -29,6 +29,12 @@ class ODActivities {
         env blank:true, nullable:true
         priority nullable: true
     }
+    static mapping = {
+        customer index:true
+        env index:true
+        relatedRecord index: true
+
+    }
 
 
 
