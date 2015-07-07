@@ -1,3 +1,4 @@
+import operationaldashboard.ODCustomer
 import operationaldashboard.ODRequestType
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
@@ -16,15 +17,18 @@ class BootStrap {
     public static String FORMAT5 = "yyyy-MM-dd hh:mm:ss"
     File actCSV
     File requestTypesCSV
-    File focusCustomers
+    File customersCSV
     File components
     List<CSVRecord> recordsAct
     List<CSVRecord> recordsRequestType
-
+    List<CSVRecord> customers
     def init = { servletContext ->
         requestTypesCSV = new File("data/requestType.csv")
         recordsRequestType = CSVParser.parse(requestTypesCSV,  Charset.defaultCharset(),CSVFormat.DEFAULT ).getRecords()
         parseRequestType()
+        customersCSV = new File("data/focusCustomers.csv")
+        customers = CSVParser.parse(customersCSV,  Charset.defaultCharset(),CSVFormat.DEFAULT ).getRecords()
+        parseCustomers()
         actCSV = new File("data/activites.csv")
         recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
@@ -32,6 +36,22 @@ class BootStrap {
         parseACT()
     }
     def destroy = {
+    }
+    def parseCustomers() {
+
+        if (isRecordsEmpty(customers)) {
+            return null;
+        }
+        long numberOfRecords = customers.size();
+        for (int index = 1; index<numberOfRecords;index++) {
+
+            CSVRecord csvRecord = customers.get(index)
+            if(isValidRecord(csvRecord)) {
+                log.info(csvRecord)
+                new ODCustomer(name: csvRecord.get(0)).save(failOnError: true)
+            }
+        }
+
     }
     def parseRequestType() {
         if (isRecordsEmpty(recordsRequestType)) {

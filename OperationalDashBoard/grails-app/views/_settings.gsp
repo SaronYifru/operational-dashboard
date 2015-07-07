@@ -18,12 +18,13 @@
             <div class="modal-body">
                 <h5>Upload Focus Customers List</h5>
                 <g:formRemote name="myForm" enctype="multipart/form-data" url="[controller: 'ODCustomer', action: 'uploadFile']">
-                    <fieldset class="form">
+
                         <input type="file" name="customerFile" />
-                    </fieldset>
-                    <fieldset class="buttons">
+                        <input type="text" name="id"/>
+
+
                         <g:submitButton name="uploadFile" value="Upload" />
-                    </fieldset>
+
                 </g:formRemote>
                 <h5>Upload Person to Owner Group List</h5>
                 <g:formRemote name="myForm" url="[controller: 'ODPerson', action: 'uploadFile']" onSuccess="createUserTable(data)">
