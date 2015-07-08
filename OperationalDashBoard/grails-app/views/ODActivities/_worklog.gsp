@@ -16,7 +16,7 @@
             %{--</div>--}%
             %{--<div class="modal-body">--}%
                 %{--<div class="table-responsive" id="activitiesWorklog">--}%
-                    <table class="table table-striped">
+                    <table class="table table-striped"  id="worklog">
                         <thead>
                         <tr>
                             <th>Date</th>
@@ -24,13 +24,14 @@
                             <th>Summary</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <g:each in="${activities}"  var="activity">
-                        <tr ng-repeat="log in logs">
-                            <td ng-bind="log.date"></td>
-                            <td ng-bind="log.createdBy"></td>
-                            <td ng-bind="log.summary"></td>
+                        <tbody>>
+                        <g:each in="${worklogs}"  var="log">
+                        <tr>
+                            <td>${log.createdDate}</td>
+                            <td>${log.createdBy}</td>
+                            <td>${log.summary}</td>
                         </tr>
+                           </g:each>
                         </tbody>
                     </table>
                 %{--</div>--}%

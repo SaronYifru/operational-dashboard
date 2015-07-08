@@ -18,6 +18,7 @@ class ODActivities {
     String relatedRecord
     String requestType
     static hasMany = [worklogs:ODWorklog]
+    int numberOfDaysOpen
     static constraints = {
         ticketID unique:true
         relatedRecord blank:true

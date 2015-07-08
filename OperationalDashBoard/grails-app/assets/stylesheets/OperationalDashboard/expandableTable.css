@@ -1,10 +1,10 @@
 td.details-control {
-    /*background: url('/examples/resources/details_open.png') no-repeat center center;*/
+    background: url('http://i.imgur.com/SD7Dz.png') no-repeat center center;
     cursor: pointer;
 }
 
 tr.shown td.details-control {
-    /*background: url('/examples/resources/details_close.png') no-repeat center center;*/
+    background: url('http://i.imgur.com/d4ICC.png') no-repeat center center;
 }
 
 div.slider {

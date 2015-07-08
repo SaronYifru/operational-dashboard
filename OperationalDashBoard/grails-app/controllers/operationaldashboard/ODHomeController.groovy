@@ -5,12 +5,19 @@ import com.mongodb.util.JSON
 class ODHomeController {
 
     def index() {
-        //log.info("Rendering Operational Dashboard!")
-       // render (view:'main')
-        def actSummary = loadACTSummary()
-//        log.info(actSummary.prodSummary.prodCustomerRequestSummary.customerToTickets)
-        [summary: [actSummary:actSummary, prbSummary: null], alerts: null]
 
+
+       def actSummary = loadACTSummary()
+        def requestType = ODRequestType.list()
+//
+
+      [actSummary: actSummary, alerts: getAlerts(), requestType:requestType]
+
+    }
+    def getJson() {
+        def actSummary = loadACTSummary()
+
+        render (actSummary)  as grails.converters.JSON
     }
     def loadACTSummary() {
         //Finish this
@@ -27,6 +34,19 @@ class ODHomeController {
          unknownCustomerRequestedIssueSummary: unknownCustomerRequestedIssueSummary,
          unknownCustomerRequestSummary: unknownCustomerRequestSummary]]
 
+    }
+    def getAlerts() {
+        def requestType = ODRequestType.list()
+        def alerts= new HashMap<String, Map>()
+        //These will be uploadable by user
+        for (type in requestType) {
+            log.info(type.name)
+            def typeAlertWorklog = ODActivities.findAllByRequestType("Promotion Build / Audit").size()
+            def typeAlertNoWorklog = ODActivities.findByRequestTypeAndNumberOfDaysOpenAndWorklogsNotIsNull(type.name, 7)
+            alerts.put(type, [typeAlertWorklog: typeAlertWorklog, typeAlertNoWorklog: typeAlertNoWorklog, requestType: type])
+            log.info(ODActivities.withCriteria {eq("requestType", type.name)}.size())
+        }
+       [alerts:alerts]
     }
     def getCustomersACTSummary(String environment, boolean relatedRecord) {
         def customers = ODCustomer.list()

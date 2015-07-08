@@ -9,7 +9,7 @@
                 </div>
                 <div class="panel-body panel-collapse collapse" id="collapseAct">
                     <h4 class="panel-title">
-                        <a href="./activitiesDetailed.html">All Activities</a>
+                        <g:link controller="ODActivities">All Activities</g:link>
                     </h4>
                     <g:render template="/ODHome/env/prod" model="[summary: actSummary.prodSummary]"/>
                     <g:render template="/ODHome/env/mtf" model="[summary: actSummary.mtfSummary]"/>

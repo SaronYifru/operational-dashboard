@@ -48,7 +48,8 @@ class BootStrap {
             CSVRecord csvRecord = customers.get(index)
             if(isValidRecord(csvRecord)) {
                 log.info(csvRecord)
-                new ODCustomer(name: csvRecord.get(0).trim()).save(failOnError: true)
+                def name = csvRecord.get(0).trim().replaceAll("^\\s+", "")
+                new ODCustomer(name: name).save(failOnError: true)
             }
         }
 
@@ -60,7 +61,7 @@ class BootStrap {
         long numberOfRecords = recordsRequestType.size();
         for (int index = 1; index<numberOfRecords;index++) {
             CSVRecord csvRecord = recordsRequestType.get(index)
-            new ODRequestType(name: csvRecord.get(0)).save(failOnError: true)
+            new ODRequestType(name: csvRecord.get(0).trim()).save(failOnError: true)
         }
 
 
@@ -91,6 +92,12 @@ class BootStrap {
 
                 String priority = csvRecord.get(7)
                 Date actualStart =  new Date().parse(FORMAT2, csvRecord.get(8))
+                int numberOfDaysOpen
+                use(groovy.time.TimeCategory) {
+                     numberOfDaysOpen = (new Date() - actualStart).days
+
+                }
+
                 Date statusDate = new Date().parse(FORMAT2, csvRecord.get(11))
                 String owner = csvRecord.get(14)
                 String ownerGroup = csvRecord.get(15)
@@ -103,7 +110,7 @@ class BootStrap {
 
                def activity = new ODActivities(ticketID:
                         id, summary: summary, status: status, priority: priority, actualStart: actualStart, statusDate: statusDate, personName: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
-                        customer: spec.get("customer"), requestType: spec.get("request"), relatedRecord: relatedRecord)
+                        customer: spec.get("customer"), requestType: spec.get("request"), relatedRecord: relatedRecord, numberOfDaysOpen: numberOfDaysOpen)
                 activity.save(failOnError: true)
 
                 for (log in logs) {

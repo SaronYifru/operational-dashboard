@@ -13,7 +13,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
 
     <asset:javascript src="dataTable.js"/>
-    <asset:javascript src="columnReorder.js"/>
+    <asset:javascript src="columnReorderWithResize.js"/>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
@@ -29,7 +29,7 @@
     <asset:stylesheet src="/OperationalDashboard/homeStyle.css"/>
     <asset:stylesheet src="/OperationalDashboard/dataTable.css"/>
     <asset:stylesheet src="/OperationalDashboard/columnReorder.css"/>
-    <asset:javascript src="expandableTable.js"/>
+    %{--<asset:javascript src="expandableTable.js"/>--}%
     <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="columnFilter.js"/>
@@ -41,47 +41,66 @@
 
 <body>
 <g:javascript>
-    /* Formatting function for row details - modify as you need */
-    %{--function format ( d ) {--}%
-        %{--// `d` is the original data object for the row--}%
-        %{--var data = eval(${activities})--}%
-        %{--var table = '<div>'+--}%
-                %{--'<table class="table table-striped display">';--}%
-            %{--jQuery.each(data, function(i, worklog) {--}%
-                %{--table.append(--}%
-                        %{--'<tr>'+--}%
-                %{--'<td>Full name:</td>'+--}%
-                %{--'<td>'+worklog.summary+'</td>'+--}%
+    function format ( d ) {
+    // `d` is the original data object for the row
+    var t = '<table class="table table-striped">'+
+        '<thead>' +
+        '<tr>' +
+             '<th>Date</th>' +
+              '<th>Created By</th>'  +
+              '<th>Summary</th>' +
+                        '</tr>' +
+         '<thead>' +
+         '<tbody>' +
 
-                %{--'<td>Extension number:</td>'+--}%
-                %{--'<td>'+worklog.createdBy+'</td>'+--}%
+           '<tr>'+
+            '<td>' + '4/26/2015' + '</td>'+
+            '<td>' + 'E040832' + '</td>'+
 
-                %{--'<td>' + worklog.createdDate + '</td>'+--}%
-                %{--'</tr>'--}%
-    %{--)});--}%
-            %{--table.append('</table>'+ '</div>');--}%
-    %{--}--}%
+            '<td>' + 'Some clarifications Needed Please' +'</td>'+
+            '</tr>' +
+            '<tr>'+
+            '<td>' + '4/21/2015' + '</td>'+
+            '<td>' + 'E020147' + '</td>'+
+
+            '<td>' + 'MRS BATCH--please build new script for daily job' +'</td>'+
+            '</tr>' +
+            '<tr>'+
+            '<td>' + '6/19/2015' + '</td>'+
+            '<td>' + 'E026647' + '</td>'+
+
+            '<td>' + 'Need Both Daily and Weekly' +'</td>'+
+            '</tr>' +
+
+
+        '</g' + ':each>' +
+        '</tbody>' +
+
+    '</table>';
+    return t
+}
+
     $(document).ready(function () {
        var table = $('#activitiesTable').dataTable({
-            "bJQueryUI": true,
+
             "order": [[0, "desc"]],
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
             "paging": false,
-            "sDom": 'Rlfrtip'
+
         }).columnFilter({
             sPlaceHolder: "head:after",
             aoColumns: [  null, { type: "text"  },
 
-                null,
-                null,
-                null,
-                null,
+                { type: "text"  },
+               { type: "select"  },
+                { type: "select"  },
+               { type: "text"  },
                 { type: "select"},
                 { type: "select"},
                 { type: "select"},
-               null,
+              { type: "text"  },
                 { type: "select"},
                 { type: "select"},
                 { type: "select"},
@@ -95,17 +114,27 @@
                 type: 'column',
                 target: 'tr'
             }
-        },
-        columnDefs: [ {
-            className: 'control',
-            orderable: false,
-            targets:   0
-        } ],
+        }
 
 
 
         });
+        $('#activitiesTable tbody').on('click', 'td', function () {
+        var tr = $(this).closest('tr');
+        var row = table.api().row( tr );
 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
 
         %{--// Add event listener for opening and closing details--}%
         %{--$('#activitiesTable tbody').on('click', 'td', function () {--}%
@@ -137,9 +166,12 @@
 <g:render template="/sections/header"/>
 <div class="container-fluid">
     <h1>Activities</h1>
+    <g:if test="${customerName != null}">
+        <h3>${customerName}</h3>
+    </g:if>
     <g:render template="activitiesDetails" model="[activities: activities]"/>
 </div>
-<h2>Testing subversion</h2>
+
 %{--<g:render template="/sections/footer"/>--}%
 %{--</div>--}%
 

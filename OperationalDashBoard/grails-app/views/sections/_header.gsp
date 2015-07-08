@@ -8,8 +8,9 @@
                     class="icon-bar"></span> <span class="icon-bar"></span> <span
                     class="icon-bar"></span>
             </button>
-            <a href="./dashboard2.html" class="navbar-brand"><span
-                    class="glyphicon glyphicon-home"></span> Operational Dashboard</a>
+            <g:link controller="ODHome"><span class="navbar-brand"><span
+                    class="glyphicon glyphicon-home"></span>Operational Dashboard</span> </g:link>
+
         </div>
         <nav class="collapse navbar-collapse" role="navigation">
             <ul class="nav navbar-nav">
