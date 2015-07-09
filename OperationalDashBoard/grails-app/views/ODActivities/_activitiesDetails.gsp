@@ -1,15 +1,15 @@
 
-<div class="table-responsive">
-    <table class="table table-striped display wrap table-expandable" cellspacing="0" width="100%" id="activitiesTable">
+<div class="table-responsive" style="overflow-x: auto">
+    <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="activitiesTable">
         <thead>
         <tr>
             <th></th>
             <th><a href="#" >Ticket #</a></th>
-            <th style="white-space:nowrap;"><a>Summary</a></th>
-            <th style="white-space:nowrap;"><a>Status</a></th>
-            <th style="white-space:nowrap;"><a>Priority</a></th>
-            <th style="white-space:nowrap;"><a>Actual Start</a></th>
-            <th style="white-space:nowrap;"><a>Person name</a></th>
+            <th ><a>Summary</a></th>
+            <th><a>Status</a></th>
+            <th><a>Priority</a></th>
+            <th ><a>Actual Start</a></th>
+            <th ><a>Person name</a></th>
             <th style="white-space:nowrap;"><a>Responsible Group</a></th>
             <th style="white-space:nowrap;"><a>Owner Group</a></th>
             <th style="white-space:nowrap;"><a>Status Date</a></th>
@@ -24,7 +24,7 @@
         <tr>
             <th></th>
             <th><a>Ticket #</a></th>
-            <th class="col-md-3"><a>Summary</a></th>
+            <th><a>Summary</a></th>
             <th><a>Status</a></th>
             <th><a>Priority</a></th>
             <th><a>Actual Start</a></th>

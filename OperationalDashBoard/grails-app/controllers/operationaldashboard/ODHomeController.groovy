@@ -6,10 +6,9 @@ class ODHomeController {
 
     def index() {
 
-
        def actSummary = loadACTSummary()
         def requestType = ODRequestType.list()
-//
+
 
       [actSummary: actSummary, alerts: getAlerts(), requestType:requestType]
 

@@ -13,7 +13,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
 
     <asset:javascript src="dataTable.js"/>
-    <asset:javascript src="columnReorderWithResize.js"/>
+    <asset:javascript src="columnReorder.js"/>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
@@ -34,6 +34,9 @@
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="dataTablesResponsive.js"/>
+    <asset:javascript src="columnResize.js"/>
+    <asset:javascript src="columnVis.js"/>
+    <asset:stylesheet src="/OperationalDashboard/columnVis.css"/>
     <asset:stylesheet src="/OperationalDashboard/dataTablesResponsive.css"/>
 
     <title>OPD - Activities</title>
@@ -80,9 +83,14 @@
     return t
 }
 
+
     $(document).ready(function () {
        var table = $('#activitiesTable').dataTable({
-
+            "dom": 'Rlfrtip',
+            "dom": 'C<"clear">RZlfrtip',
+            "colResize": {
+            "tableWidthFixed": false
+              },
             "order": [[0, "desc"]],
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
@@ -168,6 +176,7 @@
     <h1>Activities</h1>
     <g:if test="${customerName != null}">
         <h3>${customerName}</h3>
+        <span> <g:link controller="ODActivities">All Activities</g:link></span>
     </g:if>
     <g:render template="activitiesDetails" model="[activities: activities]"/>
 </div>

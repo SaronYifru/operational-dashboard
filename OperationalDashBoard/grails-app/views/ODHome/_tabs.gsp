@@ -7,6 +7,7 @@
     <div class="tab-pane fade in active" id="alerts">
             <div class="row">
                  <h1 class="page-header">Alerts</h1>
+                <h3>Tickets Open for days > Threshold</h3>
                  <g:render template="alerts" model="[alerts: alerts, requestType: requestType]"></g:render>
              </div>
     </div>
