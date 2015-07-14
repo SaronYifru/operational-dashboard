@@ -87,21 +87,16 @@
         left: 0;
     }
     </style>
-    <script>
-        $('input[type="checkbox"].style1').checkbox({
-            buttonStyle: 'btn-link btn-large',
-            buttonStyleChecked: 'btn-success',
-            checkedClass: 'icon-check',
-            uncheckedClass: 'icon-check-empty'
-        });
-    </script>
 
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 </head>
 
 <body>
 <g:render template="/sections/header"/>
     <div class="container">
-        <g:render template="/ODHome/tabs" model="[summary: actSummary, alertsByRequest:alertsByRequest, requestType: requestType, customers:customers]"/>
+        <g:render template="/ODHome/tabs" model="[actSummary: actSummary, prbSummary: prbSummary, actAlertsByRequest:actAlertsByRequest, prbAlertsByRequest:prbAlertsByRequest, requestType: requestType, customers:customers, thresholds:thresholds]"/>
 
     </div>
     %{--<g:render template="/sections/footer"/>--}%

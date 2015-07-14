@@ -13,10 +13,9 @@ class ODActivitiesController {
 
     }
     def getCustomersActivities() {
-        String name = params.id
-        log.info(name)
-        def activities = ODActivities.findAllByCustomer(ODCustomer.findByName(name))
-        render(view: "index", model: [activities:activities, customerName:name])
+        ODCustomer customer = ODCustomer.findById(params.id)
+        def activities = ODActivities.findAllByCustomer(customer)
+        render(view: "index", model: [activities:activities, customerName:customer.name])
     }
 
 }

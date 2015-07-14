@@ -6,24 +6,86 @@
 <div class="tab-content col-md-10">
     <div class="tab-pane active" id="customerSettings">
         <h4>Customers</h4>
-        <ul class="list-group">
+        <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="customersTable">
+            <thead>
+            <tr>
+                <th>Focus Flag</th>
+                <th>Customer</th>
+            </tr>
+            <tr>
+                <g:formRemote name="customerForm"
+                              url="[controller: 'ODCustomer', action: 'addCustomer',
+                                    ]">
+
+
+                <div class="row">
+
+                    <div class="form-group col-xs-1">
+                        <label><input type="checkbox" name="focusFlag">Focus</label>
+                    </div>
+                    <div class="form-group col-xs-9">
+                         <input class="form-control" name="customerName" placeholder="Enter New Customer" id="pwd">
+                    </div>
+
+
+                <div class="form-group col-xs-1">
+                    <button type="submit" class="btn btn-success">Add</button>
+                </div>
+            </div>
+                </g:formRemote>
+          </tr>
+            </thead>
+            <tbody>
+
             <g:each in="${customers}" var="customer">
-                <li class="list-group-item"><input type="checkbox" class="style1" checked="${customer.focusFlag}"/>${customer.name}</li>
+                <tr>
+                   <td>
+                       <g:checkBox name="focusFlag" value="${customer.focusFlag}" checked="${customer?.focusFlag == true}" onclick="${remoteFunction(controller:'ODCustomer', action:'SetFocusFlag', id:"${customer.id}",
+                               params:'\'focusFlag=\' + this.checked')}"/>
+
+                   </td>
+                    <td>${customer.name}</td>
+                </tr>
             </g:each>
-        </ul>
+            </tbody>
+            </table>
+
     </div>
     <div class="tab-pane" id="thresholdSettings">
-        <h4>Pane B</h4>
-        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames
-        ac turpis egestas.</p>
+        <h4>Thresholds</h4>
+        <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="thresholdsTable">
+            <thead>
+            <tr>
+                <th>Request Type</th>
+                <th>Attribute</th>
+                <th>Value</th>
+            </tr>
+
+            </thead>
+            <tbody>
+
+            <g:each in="${thresholds}" var="threshold">
+                <tr>
+                    <g:if test="${threshold.type == null}">
+                        <td>All Request Types</td>
+                    </g:if>
+                    <g:else><td>${threshold.type.name}</td></g:else>
+
+                    <td>${threshold.attribute}</td>
+                    <td><a href="#" class="firstname" id="firstname" data-type="text" data-pk="1" data-placement="right"
+                           data-title="Enter Threshold" class="editable editable-click editable-empty" style="display: inline;" data-url="../ODThreshold">${threshold.thresholdValue}</a></td>
+                </tr>
+            </g:each>
+            </tbody>
+        </table>
     </div>
 
 </div><!-- tab content -->
 <script>
-    $('input[type="checkbox"].style1').checkbox({
-        buttonStyle: 'btn-link btn-large',
-        buttonStyleChecked: 'btn-success',
-        checkedClass: 'icon-check',
-        uncheckedClass: 'icon-check-empty'
+
+
+    $.fn.editable.defaults.mode = 'inline';
+    $(document).ready(function() {
+        $('.firstname').editable();
     });
 </script>

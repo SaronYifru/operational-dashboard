@@ -1,5 +1,9 @@
 <%@ page import="grails.converters.JSON" %>
-<div id='dashboard'>
+<h3>Activity Tickets Open for days > Threshold</h3>
+<div id='actAlerts'>
+</div>
+<h3>Problem Tickets Open for days > Threshold</h3>
+<div id='prbAlerts'>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -215,11 +219,13 @@
 
 
 
-   var freqData= ${raw(alertsByRequest)}
-    console.log(freqData)
+   var actAlertsData= ${raw(actAlertsByRequest)}
+    console.log(actAlertsData)
 
 
-    dashboard('#dashboard',freqData);
+    dashboard('#actAlerts',actAlertsData);
+     var prbAlertsData= ${raw(prbAlertsByRequest)}
+    dashboard('#prbAlerts',prbAlertsData);
 </g:javascript>
 
 

@@ -21,6 +21,10 @@ class ODActivities {
     int numberOfDaysOpen
     static constraints = {
         ticketID unique:true
+        summary blank: true, nullable: true
+        status blank: true, nullable: true
+        actualStart nullable: true
+        statusDate nullable: true
         relatedRecord blank:true
         customer nullable: true
         personName blank: true

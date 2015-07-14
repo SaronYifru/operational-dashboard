@@ -7,10 +7,11 @@ class ODHomeController {
     def index() {
 
        def actSummary = loadACTSummary()
+        def prbSummary = loadPRBSummary()
         def requestType = ODRequestType.list()
 
 
-      [actSummary: actSummary, alertsByRequest: getAlerts(), requestType:requestType, customers:ODCustomer.list()]
+      [actSummary: actSummary, prbSummary: prbSummary, actAlertsByRequest: getAlerts(ODActivities), prbAlertsByRequest:getAlerts(ODProblems), requestType:requestType, customers:ODCustomer.list(), thresholds:ODThreshold.list()]
 
     }
     def getJson() {
@@ -20,12 +21,12 @@ class ODHomeController {
     }
     def loadACTSummary() {
         //Finish this
-        def prodCustomerRequestSummary = getCustomersACTSummary("Production Servers", false)
-        def prodCustomerRequestedIssueSummary = getCustomersACTSummary("Production Servers", true)
-        def mtfCustomerRequestedIssueSummary = getCustomersACTSummary("MTF", true)
-        def mtfCustomerRequestSummary = getCustomersACTSummary("MTF", false)
-        def unknownCustomerRequestedIssueSummary = getCustomersACTSummary(null, true)
-        def unknownCustomerRequestSummary = getCustomersACTSummary(null, false)
+        def prodCustomerRequestSummary = getCustomersSummary("Production Servers", false, ODActivities)
+        def prodCustomerRequestedIssueSummary = getCustomersSummary("Production Servers", true, ODActivities)
+        def mtfCustomerRequestedIssueSummary = getCustomersSummary("MTF", true, ODActivities)
+        def mtfCustomerRequestSummary = getCustomersSummary("MTF", false, ODActivities)
+        def unknownCustomerRequestedIssueSummary = getCustomersSummary(null, true, ODActivities)
+        def unknownCustomerRequestSummary = getCustomersSummary(null, false, ODActivities)
         return [prodSummary: [customerRequestSummary: prodCustomerRequestSummary,
          customerRequestedIssueSummary: prodCustomerRequestedIssueSummary], mtfSummary:
          [customerRequestedIssueSummary: mtfCustomerRequestedIssueSummary,
@@ -34,27 +35,42 @@ class ODHomeController {
          customerRequestSummary: unknownCustomerRequestSummary]]
 
     }
-    def getAlerts() {
+    def loadPRBSummary() {
+        def prodCustomerRequestSummary = getCustomersSummary("Production Servers", false, ODProblems)
+        def prodCustomerRequestedIssueSummary = getCustomersSummary("Production Servers", true, ODProblems)
+        def mtfCustomerRequestedIssueSummary = getCustomersSummary("MTF", true, ODProblems)
+        def mtfCustomerRequestSummary = getCustomersSummary("MTF", false, ODProblems)
+        def unknownCustomerRequestedIssueSummary = getCustomersSummary(null, true, ODProblems)
+        def unknownCustomerRequestSummary = getCustomersSummary(null, false, ODProblems)
+        return [prodSummary: [customerRequestSummary: prodCustomerRequestSummary,
+                              customerRequestedIssueSummary: prodCustomerRequestedIssueSummary], mtfSummary:
+                        [customerRequestedIssueSummary: mtfCustomerRequestedIssueSummary,
+                         customerRequestSummary: mtfCustomerRequestSummary], unknownSummary:[
+                customerRequestedIssueSummary: unknownCustomerRequestedIssueSummary,
+                customerRequestSummary: unknownCustomerRequestSummary]]
+    }
+    def getAlerts(Class className) {
         def requestTypes = ODRequestType.list()
         def alerts= []
         //These will be uploadable by user
         for (type in requestTypes) {
             log.info(type.name)
-            def typeAlertWorklog = ODActivities.countByRequestTypeAndWorklogsIsNotNull(type.id, 7)
-            def typeAlertNoWorklog = ODActivities.countByRequestType(type.id, 7)
+            int threshold = ODThreshold.findByType(type).thresholdValue
+            def typeAlertWorklog = className.countByRequestTypeAndWorklogsIsNotNull(type.id, threshold)
+            def typeAlertNoWorklog = className.countByRequestType(type.id, threshold)
             alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name])
             log.info(" tickets by request type: " + typeAlertNoWorklog)
         }
        alerts as grails.converters.JSON
     }
-    def getCustomersACTSummary(String environment, boolean relatedRecord) {
-        def customers = ODCustomer.list()
+    def getCustomersSummary(String environment, boolean relatedRecord, Class className) {
+        def customers = ODCustomer.findAllByFocusFlag(true)
 
         def customerToTickets = new HashMap<String, Integer>()
         def highestNumber = 0
         def highestCustomer = customers.get(0)
 //        this is going to be a database uploaded value
-        def threshold = 10
+        def threshold = ODThreshold.findByType(null).thresholdValue
         List customersAboveThreshold = []
         for (customer in customers) {
 
@@ -63,11 +79,11 @@ class ODHomeController {
 //            String c= "6687 - KEYBANK NATIONAL ASSOCIATION - RPS"
             int numberOfTickets
             if (relatedRecord) {
-                numberOfTickets = ODActivities.countByCustomerAndEnvAndRelatedRecordIsNull(customer, environment)
+                numberOfTickets = className.countByCustomerAndEnvAndRelatedRecordIsNull(customer, environment)
                 //activitiesService.getCustomerAct(customer.name)
             }
             else {
-                numberOfTickets = ODActivities.countByCustomerAndEnvAndRelatedRecordIsNotNull(customer, environment)
+                numberOfTickets = className.countByCustomerAndEnvAndRelatedRecordIsNotNull(customer, environment)
 
             }
 //            log.info(ODActivities.countByCustomer("6687 - KEYBANK NATIONAL ASSOCIATION - RPS"))
@@ -85,6 +101,6 @@ class ODHomeController {
             customerToTickets.put(customer.name, numberOfTickets)
 
         }
-        return [customers:customers, customerToTickets:customerToTickets, highestTickets:highestNumber, highestCustomer:highestCustomer, customersAboveThreshold:customersAboveThreshold]
+        return [customers:customers, customerToTickets:customerToTickets, highestTickets:highestNumber, highestCustomer:highestCustomer, customersAboveThreshold:customersAboveThreshold, threshold:threshold]
     }
 }
