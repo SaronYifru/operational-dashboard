@@ -43,9 +43,10 @@
 </head>
 
 <body>
-<g:javascript>
+<script>
     function format ( d ) {
     // `d` is the original data object for the row
+
     var t = '<table class="table table-striped">'+
         '<thead>' +
         '<tr>' +
@@ -53,39 +54,30 @@
               '<th>Created By</th>'  +
               '<th>Summary</th>' +
                         '</tr>' +
-         '<thead>' +
-         '<tbody>' +
+         '</thead>' +
+         '<tbody>'
+           for (var i = 0; i < d.length; i++) {
 
-           '<tr>'+
-            '<td>' + '4/26/2015' + '</td>'+
-            '<td>' + 'E040832' + '</td>'+
+               t = t + '<tr>'+
+                     '<td>' + d[i].createdDate + '</td>'+
+                     '<td>' + d[i].createdBy + '</td>'+
 
-            '<td>' + 'Some clarifications Needed Please' +'</td>'+
-            '</tr>' +
-            '<tr>'+
-            '<td>' + '4/21/2015' + '</td>'+
-            '<td>' + 'E020147' + '</td>'+
+                     '<td>' + d[i].summary +'</td>'+
+                 '</tr>'
+            }
+           t = t.concat('</tbody>' +
+                '</table>') ;
 
-            '<td>' + 'MRS BATCH--please build new script for daily job' +'</td>'+
-            '</tr>' +
-            '<tr>'+
-            '<td>' + '6/19/2015' + '</td>'+
-            '<td>' + 'E026647' + '</td>'+
-
-            '<td>' + 'Need Both Daily and Weekly' +'</td>'+
-            '</tr>' +
-
-
-        '</g' + ':each>' +
-        '</tbody>' +
-
-    '</table>';
     return t
 }
 
-
+    var table
+    var worklogsData
+    function showWorklog(worklogs) {
+        worklogsData = worklogs
+    }
     $(document).ready(function () {
-       var table = $('#activitiesTable').dataTable({
+       table = $('#activitiesTable').dataTable({
             "dom": 'Rlfrtip',
             "dom": 'C<"clear">RZlfrtip',
             "colResize": {
@@ -127,49 +119,29 @@
 
 
         });
-        $('#activitiesTable tbody').on('click', 'td', function () {
-        var tr = $(this).closest('tr');
-        var row = table.api().row( tr );
 
-        if ( row.child.isShown() ) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
+        $('#activitiesTable tbody').on('click', 'td.details-control', function () {
+            var tr =$(this).closest('tr');
+            var row = table.api().row( tr );
+            console.log(worklogsData)
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
 
-            row.child( format(row.data()) ).show();
-            tr.addClass('shown');
-        }
-    } );
+                row.child( format(worklogsData), 'no-padding' ).show();
+                tr.addClass('shown');
 
-        %{--// Add event listener for opening and closing details--}%
-        %{--$('#activitiesTable tbody').on('click', 'td', function () {--}%
-            %{--var table = $('#activitiesTable').DataTable();--}%
-            %{--var tr = $(this).closest('tr');--}%
-            %{--var row = table.row( tr );--}%
-
-            %{--if ( row.child.isShown() ) {--}%
-                %{--// This row is already open - close it--}%
-                %{--$('div.slider', row.child()).slideUp( function () {--}%
-                    %{--row.child.hide();--}%
-                    %{--tr.removeClass('shown');--}%
-                %{--} );--}%
-            %{--}--}%
-            %{--else {--}%
-                %{--// Open this row--}%
-                %{--row.child( format(row.data()), 'no-padding' ).show();--}%
-                %{--alert(row.data());--}%
-                %{--tr.addClass('shown');--}%
-
-                %{--$('div.slider', row.child()).slideDown();--}%
-            %{--}--}%
-        %{--} );--}%
+                $('div.slider', row.child()).slideDown();
+            }
+        })
 
 });
 
-</g:javascript>
+
+</script>
 
 <g:render template="/sections/header"/>
 <div class="container-fluid">

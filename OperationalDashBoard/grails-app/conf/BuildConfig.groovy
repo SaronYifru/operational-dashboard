@@ -62,10 +62,13 @@ grails.project.dependency.resolution = {
         // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
         //runtime 'org.mongodb:mongo-java-driver:3.0.2'
         //runtime 'org.mongodb:mongo-java-driver:2.10.0'
-        runtime 'javax.mail:mail:jar:1.4'
+        compile 'javax.mail:mail:1.5.0-b01'
         compile 'org.apache.commons:commons-csv:1.1'
 
         test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
+        compile 'org.grails:grails-datastore-gorm:3.1.4.RELEASE'
+        compile 'org.grails:grails-datastore-core:3.1.4.RELEASE'
+        test 'org.grails:grails-datastore-simple:3.1.4.RELEASE'
     }
 
     plugins {
@@ -81,7 +84,7 @@ grails.project.dependency.resolution = {
 
         compile ":mongodb-create-drop:1.0.2"
         // plugins needed at runtime but not for compilation
-//        runtime ":hibernate4:4.3.8.1" // or ":hibernate:3.6.10.18"
+     // runtime ":hibernate4:4.3.8.1" // or ":hibernate:3.6.10.18"
 //        compile ':hibernate:3.6.10.12'
         runtime ":database-migration:1.4.0"
         runtime ":jquery:1.11.1"

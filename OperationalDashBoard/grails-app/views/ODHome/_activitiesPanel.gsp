@@ -3,16 +3,16 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-target="#collapseAct"
-                           href="#collapseOne"> Activities </a>
+                           href="#collapseOne"> ${panelHeading} </a>
                     </h4>
 
                 </div>
                 <div class="panel-body panel-collapse collapse" id="collapseAct">
                     <h4 class="panel-title">
-                        <g:link controller="ODActivities">All Activities</g:link>
+                        <g:link controller="ODActivities">All ${panelHeading}</g:link>
                     </h4>
-                    <g:render template="/ODHome/env/prod" model="[summary: actSummary.prodSummary]"/>
-                    <g:render template="/ODHome/env/mtf" model="[summary: actSummary.mtfSummary]"/>
-                    <g:render template="/ODHome/env/unknown" model="[summary: actSummary.unknownSummary]"/>
+                    <g:render template="/ODHome/env" model="[summary: actSummary.prodSummary, envName:'Production']"/>
+                    <g:render template="/ODHome/env" model="[summary: actSummary.mtfSummary, envName:'MTF']"/>
+                    <g:render template="/ODHome/env" model="[summary: actSummary.unknownSummary, envName:'Unknown']"/>
                 </div>
             </div>

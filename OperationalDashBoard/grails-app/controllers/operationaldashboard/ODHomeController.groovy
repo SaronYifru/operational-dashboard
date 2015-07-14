@@ -3,14 +3,14 @@ package operationaldashboard
 import com.mongodb.util.JSON
 
 class ODHomeController {
-
+    def activitiesService
     def index() {
 
        def actSummary = loadACTSummary()
         def requestType = ODRequestType.list()
 
 
-      [actSummary: actSummary, alerts: getAlerts(), requestType:requestType]
+      [actSummary: actSummary, alertsByRequest: getAlerts(), requestType:requestType, customers:ODCustomer.list()]
 
     }
     def getJson() {
@@ -24,28 +24,28 @@ class ODHomeController {
         def prodCustomerRequestedIssueSummary = getCustomersACTSummary("Production Servers", true)
         def mtfCustomerRequestedIssueSummary = getCustomersACTSummary("MTF", true)
         def mtfCustomerRequestSummary = getCustomersACTSummary("MTF", false)
-        def unknownCustomerRequestedIssueSummary = getCustomersACTSummary("", true)
-        def unknownCustomerRequestSummary = getCustomersACTSummary("", false)
-        return [prodSummary: [prodCustomerRequestSummary: prodCustomerRequestSummary,
-         prodCustomerRequestedIssueSummary: prodCustomerRequestedIssueSummary], mtfSummary:
-         [mtfCustomerRequestedIssueSummary: mtfCustomerRequestedIssueSummary,
-         mtfCustomerRequestSummary: mtfCustomerRequestSummary], unknownSummary:[
-         unknownCustomerRequestedIssueSummary: unknownCustomerRequestedIssueSummary,
-         unknownCustomerRequestSummary: unknownCustomerRequestSummary]]
+        def unknownCustomerRequestedIssueSummary = getCustomersACTSummary(null, true)
+        def unknownCustomerRequestSummary = getCustomersACTSummary(null, false)
+        return [prodSummary: [customerRequestSummary: prodCustomerRequestSummary,
+         customerRequestedIssueSummary: prodCustomerRequestedIssueSummary], mtfSummary:
+         [customerRequestedIssueSummary: mtfCustomerRequestedIssueSummary,
+         customerRequestSummary: mtfCustomerRequestSummary], unknownSummary:[
+         customerRequestedIssueSummary: unknownCustomerRequestedIssueSummary,
+         customerRequestSummary: unknownCustomerRequestSummary]]
 
     }
     def getAlerts() {
-        def requestType = ODRequestType.list()
-        def alerts= new HashMap<String, Map>()
+        def requestTypes = ODRequestType.list()
+        def alerts= []
         //These will be uploadable by user
-        for (type in requestType) {
+        for (type in requestTypes) {
             log.info(type.name)
-            def typeAlertWorklog = ODActivities.findAllByRequestType("Promotion Build / Audit").size()
-            def typeAlertNoWorklog = ODActivities.findByRequestTypeAndNumberOfDaysOpenAndWorklogsNotIsNull(type.name, 7)
-            alerts.put(type, [typeAlertWorklog: typeAlertWorklog, typeAlertNoWorklog: typeAlertNoWorklog, requestType: type])
-            log.info(ODActivities.withCriteria {eq("requestType", type.name)}.size())
+            def typeAlertWorklog = ODActivities.countByRequestTypeAndWorklogsIsNotNull(type.id, 7)
+            def typeAlertNoWorklog = ODActivities.countByRequestType(type.id, 7)
+            alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name])
+            log.info(" tickets by request type: " + typeAlertNoWorklog)
         }
-       [alerts:alerts]
+       alerts as grails.converters.JSON
     }
     def getCustomersACTSummary(String environment, boolean relatedRecord) {
         def customers = ODCustomer.list()
@@ -59,15 +59,26 @@ class ODHomeController {
         for (customer in customers) {
 
 
-            def act = ODActivities.findAllByCustomer("6687 - KEYBANK NATIONAL ASSOCIATION - RPS")
-            int numberOfTickets = act.size()
+//            def act = ODActivities.findAllByCustomer("6687 - KEYBANK NATIONAL ASSOCIATION - RPS")
+//            String c= "6687 - KEYBANK NATIONAL ASSOCIATION - RPS"
+            int numberOfTickets
+            if (relatedRecord) {
+                numberOfTickets = ODActivities.countByCustomerAndEnvAndRelatedRecordIsNull(customer, environment)
+                //activitiesService.getCustomerAct(customer.name)
+            }
+            else {
+                numberOfTickets = ODActivities.countByCustomerAndEnvAndRelatedRecordIsNotNull(customer, environment)
+
+            }
+//            log.info(ODActivities.countByCustomer("6687 - KEYBANK NATIONAL ASSOCIATION - RPS"))
             log.info(customer.name + " customer")
             log.info(numberOfTickets)
             if (numberOfTickets > highestNumber) {
                 highestNumber = numberOfTickets
                 highestCustomer = customer
             }
-            else if (numberOfTickets > threshold) {
+           if (numberOfTickets > threshold) {
+                log.info("Customer tickets greater than threshold")
                 customersAboveThreshold.add([name:customer.name,tickets: numberOfTickets] )
             }
 

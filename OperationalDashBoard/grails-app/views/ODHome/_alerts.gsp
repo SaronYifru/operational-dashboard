@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <div id='dashboard'>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -58,7 +59,7 @@
             function mouseover(d){  // utility function to be called on mouseover.
                 // filter for selected state.
                 var st = fData.filter(function(s){ return s.State == d[0];})[0],
-                        nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
+                        nD = d3.keys(st.freq).map(function(s){ return {State:s, freq:st.freq[s]};});
                 tip = d3.tip()
                         .attr('class', 'd3-tip')
                         .offset([-10, 0])
@@ -121,7 +122,7 @@
             // Draw the pie slices.
             piesvg.selectAll("path").data(pie(pD)).enter().append("path").attr("d", arc)
                     .each(function(d) { this._current = d; })
-                    .style("fill", function(d) { return segColor(d.data.type); })
+                    .style("fill", function(d) { return segColor(d.data.State); })
                     .on("mouseover",mouseover).on("mouseout",mouseout);
 
             // create function to update pie-chart. This will be used by histogram.
@@ -133,7 +134,7 @@
             function mouseover(d){
                 // call the update function of histogram with new data.
                 hG.update(fData.map(function(v){
-                    return [v.State,v.freq[d.data.type]];}),segColor(d.data.type));
+                    return [v.State,v.freq[d.data.State]];}),segColor(d.data.State));
             }
             //Utility function to be called on mouseout a pie slice.
             function mouseout(d){
@@ -164,10 +165,10 @@
             // create the first column for each segment.
             tr.append("td").append("svg").attr("width", '16').attr("height", '16').append("rect")
                     .attr("width", '16').attr("height", '16')
-                    .attr("fill",function(d){ return segColor(d.type); });
+                    .attr("fill",function(d){ return segColor(d.State); });
 
             // create the second column for each segment.
-            tr.append("td").text(function(d){ return d.type;});
+            tr.append("td").text(function(d){ return d.State;});
 
             // create the third column for each segment.
             tr.append("td").attr("class",'legendFreq')
@@ -198,7 +199,7 @@
 
         // calculate total frequency by segment for all state.
         var tF = ['worklog','noWorklog'].map(function(d){
-            return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))};
+            return {State:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))};
         });
 
         // calculate total frequency by state for all segment.
@@ -210,22 +211,15 @@
     }
 </script>
 
-<script>
-    var freqData=[
-        {State:'Adhoc Reporting',freq:{worklog:2, noWorklog:5}}
-        ,{State:'Batch Processing',freq:{worklog:3, noWorklog:6}}
-        ,{State:'Cardholder Account',freq:{worklog:4, noWorklog:2}}
-        ,{State:'Consulting',freq:{worklog:10, noWorklog:5}}
-        ,{State:'Custom Solution',freq:{worklog:3, noWorklog:0}}
-        ,{State:'Data Update',freq:{worklog:15, noWorklog:5}}
-        ,{State:'How Do I',freq:{worklog:20, noWorklog:1}}
-        ,{State:'Promotion Build/Audit',freq:{worklog:3, noWorklog:4}}
-        ,{State:'Promotion Configuration/ Parameter Update',freq:{worklog:6, noWorklog:0}}
-        ,{State:'Situational Analysis',freq:{worklog:5, noWorklog:2}}
-        ,{State:'Transaction Research',freq:{worklog:1, noWorklog:1}}
-    ];
+<g:javascript encodeAs="none">
+
+
+
+   var freqData= ${raw(alertsByRequest)}
+    console.log(freqData)
+
 
     dashboard('#dashboard',freqData);
-</script>
+</g:javascript>
 
 

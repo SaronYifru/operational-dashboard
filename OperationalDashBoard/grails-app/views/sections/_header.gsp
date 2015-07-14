@@ -8,8 +8,9 @@
                     class="icon-bar"></span> <span class="icon-bar"></span> <span
                     class="icon-bar"></span>
             </button>
-            <g:link controller="ODHome"><span class="navbar-brand"><span
-                    class="glyphicon glyphicon-home"></span>Operational Dashboard</span> </g:link>
+            <g:link controller="ODHome">   <span class="navbar-brand"><span
+                    class="glyphicon glyphicon-home"></span> Operational Dashboard</span> </g:link>
+
 
         </div>
         <nav class="collapse navbar-collapse" role="navigation">
@@ -26,6 +27,7 @@
 
             </ul>
         </nav>
+        %{--<g:img uri="/images/operationaldashboard/mastercardLogo.png" width="40" height="40"/>--}%
     </div>
 </nav>
 <g:render template="/settings"/>

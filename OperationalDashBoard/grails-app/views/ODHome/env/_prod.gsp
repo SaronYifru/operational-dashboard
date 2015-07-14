@@ -1,3 +1,4 @@
+<div class="panel panel-primary">
 <div class="panel-heading">
     <h4 class="panel-title">
         <a data-toggle="collapse" data-target="#collapseActProd"
@@ -10,4 +11,5 @@
     <g:render template="/ODHome/request/customerRequest" model="[customerRequestSummary: summary.prodCustomerRequestSummary]"/>
     <g:render template="/ODHome/request/customerRequestedIssue" model="[customerRequestSummary: summary.prodCustomerRequestSummary]"/>
     %{--<g:render template="/ODHome/request/charts" model="[summary:summary.customerRequestSummary]"/>--}%
+</div>
 </div>

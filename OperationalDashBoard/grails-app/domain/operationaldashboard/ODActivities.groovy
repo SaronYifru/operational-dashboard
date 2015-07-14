@@ -14,15 +14,15 @@ class ODActivities {
     String ownerGroup
     Date statusDate
     String env
-    String customer
+    ODCustomer customer
     String relatedRecord
-    String requestType
+    ODRequestType requestType
     static hasMany = [worklogs:ODWorklog]
     int numberOfDaysOpen
     static constraints = {
         ticketID unique:true
         relatedRecord blank:true
-        customer blank: true, nullable: true
+        customer nullable: true
         personName blank: true
         responsibleGroup blank: true, nullable:true
         ownerGroup blank: true, nullable: true
@@ -36,6 +36,7 @@ class ODActivities {
         relatedRecord index: true
 
     }
+
 
 
 

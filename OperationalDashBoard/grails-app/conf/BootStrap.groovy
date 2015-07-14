@@ -1,3 +1,4 @@
+import groovy.time.TimeDuration
 import operationaldashboard.ODCustomer
 import operationaldashboard.ODRequestType
 import org.apache.commons.csv.CSVFormat
@@ -8,6 +9,7 @@ import operationaldashboard.ODActivities
 import operationaldashboard.ODWorklog
 
 import java.nio.charset.Charset
+import java.text.DateFormat
 
 class BootStrap {
     public static String FORMAT1 = "MM-dd-yyyy hh:mm:ss"
@@ -22,18 +24,22 @@ class BootStrap {
     List<CSVRecord> recordsAct
     List<CSVRecord> recordsRequestType
     List<CSVRecord> customers
+    def emailReaderService
     def init = { servletContext ->
         requestTypesCSV = new File("data/requestType.csv")
         recordsRequestType = CSVParser.parse(requestTypesCSV,  Charset.defaultCharset(),CSVFormat.DEFAULT ).getRecords()
-        parseRequestType()
+//        parseRequestType()
         customersCSV = new File("data/focusCustomers.csv")
         customers = CSVParser.parse(customersCSV,  Charset.defaultCharset(),CSVFormat.DEFAULT ).getRecords()
-        parseCustomers()
+//        parseCustomers()
         actCSV = new File("data/activites.csv")
         recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
 
         parseACT()
+//        emailReaderService.serviceMethod()
+
+
     }
     def destroy = {
     }
@@ -91,14 +97,16 @@ class BootStrap {
                 String status = csvRecord.get(5)
 
                 String priority = csvRecord.get(7)
-                Date actualStart =  new Date().parse(FORMAT2, csvRecord.get(8))
+                Date actualStart =  Date.parse(FORMAT2, csvRecord.get(8), TimeZone.getTimeZone("CDT"))
                 int numberOfDaysOpen
-                use(groovy.time.TimeCategory) {
-                     numberOfDaysOpen = (new Date() - actualStart).days
 
-                }
+                    DateFormat dateFormat =  DateFormat.getDateTimeInstance()
+                            dateFormat.setTimeZone(TimeZone.getTimeZone("CDT"))
+                     numberOfDaysOpen =  new Date() - actualStart
+                    log.info(numberOfDaysOpen)
 
-                Date statusDate = new Date().parse(FORMAT2, csvRecord.get(11))
+
+                Date statusDate = Date.parse(FORMAT2, csvRecord.get(11))
                 String owner = csvRecord.get(14)
                 String ownerGroup = csvRecord.get(15)
                 String responsibleGroup = csvRecord.get(16)
@@ -107,10 +115,34 @@ class BootStrap {
                 HashMap<String, String> spec = parseACTSpec(index + 4)
                 List<ODWorklog>logs = parseACTWorklog(index + 8)
                 //Create a new instance of 'Activity'
+                ODRequestType  type
+                String requestTypeName
+                if (spec.get("MRSREQUEST").equals(null)) {
+                    requestTypeName = "No Attribute"
+                }
+                else if (spec.get("MRSREQUEST").equals("")){
+                    requestTypeName = "No Value"
+                }
+                else {
+                    requestTypeName = spec.get("MRSREQUEST").trim()
 
+                }
+                type  = ODRequestType.findOrSaveByName(requestTypeName)
+                String customerName
+                if (spec.get("MRSCUSTOMER").equals(null)) {
+                    customerName = "No Attribute"
+                }
+                else if (spec.get("MRSCUSTOMER").equals("")){
+                    customerName = "No Value"
+                }
+                else {
+                    customerName = spec.get("MRSCUSTOMER").trim()
+
+                }
+                ODCustomer customer = ODCustomer.findOrSaveByName(customerName)
                def activity = new ODActivities(ticketID:
                         id, summary: summary, status: status, priority: priority, actualStart: actualStart, statusDate: statusDate, personName: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
-                        customer: spec.get("customer"), requestType: spec.get("request"), relatedRecord: relatedRecord, numberOfDaysOpen: numberOfDaysOpen)
+                        customer: customer, requestType: type, relatedRecord: relatedRecord, numberOfDaysOpen: numberOfDaysOpen)
                 activity.save(failOnError: true)
 
                 for (log in logs) {
@@ -146,14 +178,21 @@ class BootStrap {
         return logs;
 
     }
-    private HashMap<String, String> parseACTSpec(final int index) {
+    private HashMap<String, String> parseACTSpec(int index) {
         HashMap<String, String> specs = new HashMap<String, String>();
-        String customer = recordsAct.get(index).get(12);
-        String component = recordsAct.get(index + 1).get(12);
-        String request = recordsAct.get(index + 2).get(12);
-        specs.put("customer", customer);
-        specs.put("component", component);
-        specs.put("request", request);
+        while (isValidRecord(recordsAct.get(index))) {
+            String attribute = recordsAct.get(index).get(0)
+            String value = recordsAct.get(index).get(12)
+
+                specs.put(attribute, value)
+            index++
+        }
+//        String customer = recordsAct.get(index).get(12);
+//        String component = recordsAct.get(index + 1).get(12);
+//        String request = recordsAct.get(index + 2).get(12);
+//        specs.put("customer", customer);
+//        specs.put("component", component);
+//        specs.put("request", request);
 
         return specs
     }
@@ -166,4 +205,6 @@ class BootStrap {
         }
         return true;
     }
+
+
 }

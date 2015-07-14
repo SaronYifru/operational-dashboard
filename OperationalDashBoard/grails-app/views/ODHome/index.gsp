@@ -87,13 +87,21 @@
         left: 0;
     }
     </style>
+    <script>
+        $('input[type="checkbox"].style1').checkbox({
+            buttonStyle: 'btn-link btn-large',
+            buttonStyleChecked: 'btn-success',
+            checkedClass: 'icon-check',
+            uncheckedClass: 'icon-check-empty'
+        });
+    </script>
 
 </head>
 
 <body>
 <g:render template="/sections/header"/>
     <div class="container">
-        <g:render template="/ODHome/tabs" model="[summary: actSummary, alerts:alerts, requestType: requestType]"/>
+        <g:render template="/ODHome/tabs" model="[summary: actSummary, alertsByRequest:alertsByRequest, requestType: requestType, customers:customers]"/>
 
     </div>
     %{--<g:render template="/sections/footer"/>--}%
