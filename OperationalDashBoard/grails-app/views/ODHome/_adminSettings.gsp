@@ -72,8 +72,10 @@
                     <g:else><td>${threshold.type.name}</td></g:else>
 
                     <td>${threshold.attribute}</td>
-                    <td><a href="#" class="firstname" id="firstname" data-type="text" data-pk="1" data-placement="right"
-                           data-title="Enter Threshold" class="editable editable-click editable-empty" style="display: inline;" data-url="../ODThreshold">${threshold.thresholdValue}</a></td>
+                    <td>
+                        <a  class="firstname" data-pk="" id="${threshold.id}" class="editable editable-click editable-empty" data-type="text"  data-placement="right"
+                            style="display: inline;" data-url="../ODThreshold/setThreshold">${threshold.thresholdValue}</a> </td>
+
                 </tr>
             </g:each>
             </tbody>
@@ -86,6 +88,12 @@
 
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function() {
-        $('.firstname').editable();
+        $('.firstname').editable({
+
+        });
     });
+    function save() {
+        %{--${remoteFunction (controller: "ODThreshold", action:"setThreshold")}--}%
+        alert("save")
+    }
 </script>

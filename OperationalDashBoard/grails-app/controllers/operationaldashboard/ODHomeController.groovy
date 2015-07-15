@@ -1,9 +1,7 @@
 package operationaldashboard
 
-import com.mongodb.util.JSON
-
 class ODHomeController {
-    def activitiesService
+    def customerService
     def index() {
 
        def actSummary = loadACTSummary()
@@ -93,7 +91,7 @@ class ODHomeController {
                 highestNumber = numberOfTickets
                 highestCustomer = customer
             }
-           if (numberOfTickets > threshold) {
+           if (numberOfTickets >= threshold) {
                 log.info("Customer tickets greater than threshold")
                 customersAboveThreshold.add([name:customer.name,tickets: numberOfTickets] )
             }

@@ -38,7 +38,7 @@
 
             // Create function for y-axis map.
             var y = d3.scale.linear().range([hGDim.h, 0])
-                    .domain([0, d3.max(fD, function(d) { return d[1]; })]);
+                    .domain([-1, d3.max(fD, function(d) { return d[1]; })]);
 
             // Create bars for histogram to contain rectangles and freq labels.
             var bars = hGsvg.selectAll(".bar").data(fD).enter()
@@ -88,7 +88,7 @@
             // create function to update the bars. This will be used by pie-chart.
             hG.update = function(nD, color){
                 // update the domain of the y-axis map to reflect change in frequencies.
-                y.domain([0, d3.max(nD, function(d) { return d[1]; })]);
+                y.domain([-1, d3.max(nD, function(d) { return d[1]; })]);
 
                 // Attach the new data to the bars.
                 var bars = hGsvg.selectAll(".bar").data(nD);
@@ -131,8 +131,19 @@
 
             // create function to update pie-chart. This will be used by histogram.
             pC.update = function(nD){
-                piesvg.selectAll("path").data(pie(nD)).transition().duration(500)
-                        .attrTween("d", arcTween);
+                console.log(nD)
+                if(nD.filter(function(nD) { return nD.freq > 0 }).length > 0) {
+//                    piesvg.selectAll("path").data(pie(nD)).enter().append("path")
+                    // create svg for pie chart.
+                    piesvg.selectAll("path").append("svg")
+//                            .attr("width", pieDim.w).attr("height", pieDim.h).append("g")
+//                            .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")").append("svg");
+                    piesvg.selectAll("path").data(pie(nD)).transition().duration(500).attrTween("d", arcTween);
+                }
+                else {
+                    piesvg.remove()
+                }
+
             }
             // Utility function to be called on mouseover a pie slice.
             function mouseover(d){
