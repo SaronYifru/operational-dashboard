@@ -19,6 +19,7 @@ class ODActivities {
     ODRequestType requestType
     static hasMany = [worklogs:ODWorklog]
     int numberOfDaysOpen
+    ODIncidents relatedIncident
     static constraints = {
         ticketID unique:true
         summary blank: true, nullable: true
@@ -33,6 +34,7 @@ class ODActivities {
         requestType blank: true, nullable: true
         env blank:true, nullable:true
         priority nullable: true
+        relatedIncident nullable: true
     }
     static mapping = {
         customer index:true

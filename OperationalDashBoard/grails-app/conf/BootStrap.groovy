@@ -25,9 +25,11 @@ class BootStrap {
     File requestTypesCSV
     File customersCSV
     File prbCSV
+    File incCsv
     File components
     List<CSVRecord> recordsAct
     List<CSVRecord> recordsPrb
+    List<CSVRecord> recordsInc
     List<CSVRecord> recordsRequestType
     List<CSVRecord> customers
     int actIndex
@@ -40,6 +42,9 @@ class BootStrap {
         customersCSV = new File("data/focusCustomers.csv")
         customers = CSVParser.parse(customersCSV,  Charset.defaultCharset(),CSVFormat.DEFAULT ).getRecords()
 //        parseCustomers()
+        incCsv = new File("data/incidents.csv")
+        recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
+        parseINC()
         actCSV = new File("data/activites.csv")
         recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
@@ -72,6 +77,26 @@ class BootStrap {
             }
         }
 
+    }
+    def parseINC() {
+        if (isRecordsEmpty(recordsInc)) {
+            return null;
+        }
+        long numberOfRecords = recordsInc.size()
+        for (int index = 0; index<numberOfRecords;index++) {
+            CSVRecord csvRecord = recordsInc.get(index)
+            if(isValidRecord(csvRecord) && csvRecord.get(0).matches("INC(.*)") ) {
+                ODIncidents incident = ODIncidents.findOrCreateByTicketIDAndSummary(csvRecord.get(0), csvRecord.get(1)).save(failOnError: true)
+                String relatedRecord = csvRecord.get(4)
+                if(relatedRecord.matches("ACT(.*)")) {
+                    incident.setRelatedACT(relatedRecord)
+                }
+                else if (relatedRecord.matches("PRB(.*)")) {
+                    incident.setRelatedPRB(relatedRecord)
+                }
+                incident.save(failOnError: true)
+            }
+        }
     }
     def parseRequestType() {
         if (isRecordsEmpty(recordsRequestType)) {
@@ -184,6 +209,12 @@ class BootStrap {
 
                 }
                 problem.save(failOnError: true)
+                ODIncidents relatedIncident = ODIncidents.findByRelatedPRB(id)
+                if (relatedIncident != null) {
+                    problem.setRelatedIncident(relatedIncident)
+                    problem.save(failOnError: true)
+                }
+
 
 
             } else {
@@ -262,6 +293,11 @@ class BootStrap {
 
                 }
                 activity.save(failOnError: true)
+                ODIncidents relatedIncident = ODIncidents.findByRelatedACT(id)
+                if (relatedIncident != null) {
+                    activity.setRelatedIncident(relatedIncident)
+                    activity.save()
+                }
 
 
             } else {

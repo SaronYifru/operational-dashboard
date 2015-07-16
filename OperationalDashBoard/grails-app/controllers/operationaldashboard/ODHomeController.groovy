@@ -63,7 +63,9 @@ class ODHomeController {
     }
     def getCustomersSummary(String environment, boolean relatedRecord, Class className) {
         def customers = ODCustomer.findAllByFocusFlag(true)
-
+        if(customers.size() == 0) {
+            customers = ODCustomer.list()
+        }
         def customerToTickets = new HashMap<String, Integer>()
         def highestNumber = 0
         def highestCustomer = customers.get(0)

@@ -36,7 +36,7 @@
             <th><a>RequestType</a></th>
             <th><a>Worklog</a></th>
             <th><a>Alerts</a></th>
-            %{--<th><a>Related Record</a></th>--}%
+            <th><a>Related Record</a></th>
 
         </tr>
         </thead>
@@ -60,7 +60,9 @@
                 <td>${problem.requestType.name}</td>
                 <td>${problem.worklogs.isEmpty()? "No" : "Yes"}</td>
                 <td title="Alert Reason">${problem.numberOfDaysOpen > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>
-                %{--<td><a href="#openProblemTicket">${problem.relatedRecords}</a></td>--}%
+                <td><g:if test="${problem.relatedIncident != null}">
+                    <g:link id="${problem.relatedIncident.relatedACT}" controller="ODActivities" action="getTicket">${problem.relatedIncident.relatedACT}</g:link></g:if></td>
+            </tr>
             </tr>
         </g:each>
         </tbody>

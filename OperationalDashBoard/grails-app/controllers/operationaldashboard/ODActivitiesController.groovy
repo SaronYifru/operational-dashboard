@@ -17,5 +17,10 @@ class ODActivitiesController {
         def activities = ODActivities.findAllByCustomer(customer)
         render(view: "index", model: [activities:activities, customerName:customer.name])
     }
+    def getTicket() {
+        ODActivities activity = ODActivities.findByTicketID(params.id)
+        render(view: "index", model:[activities: activity!=null?[activity]:[]])
+
+    }
 
 }

@@ -24,7 +24,7 @@
                         <label><input type="checkbox" name="focusFlag">Focus</label>
                     </div>
                     <div class="form-group col-xs-9">
-                         <input class="form-control" name="customerName" placeholder="Enter New Customer" id="pwd">
+                         <input class="form-control" name="customerName" placeholder="Enter New Customer">
                     </div>
 
 
@@ -92,7 +92,13 @@
 
         });
     });
-    function save() {
+    function updateCustomersTable(data) {
+        var table = document.getElementById("customersTable").getElementsByTagName('tbody')[0];
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        cell2.innerHTML = "Test Customer";
+        cell1.innerHTML = "Test Focus";
         %{--${remoteFunction (controller: "ODThreshold", action:"setThreshold")}--}%
         alert("save")
     }

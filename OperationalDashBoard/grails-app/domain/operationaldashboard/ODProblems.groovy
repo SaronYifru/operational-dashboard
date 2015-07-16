@@ -15,14 +15,12 @@ class ODProblems {
     ODRequestType requestType
     static hasMany = [worklogs:ODWorklog]
     int numberOfDaysOpen
-    ODActivities relatedActivity
     ODIncidents relatedIncident
 
     static constraints = {
         ticketID unique:true
         customer blank: true
         owner blank: true, nullable: true
-        relatedActivity nullable: true
         relatedIncident nullable: true
         responsibleGroup blank: true, nullable: true
         ownerGroup blank: true, nullable: true
