@@ -1,6 +1,11 @@
+import com.mongodb.util.Hash
 import groovy.time.TimeDuration
+import operationaldashboard.ODAccess
+import operationaldashboard.ODBreakFix
+import operationaldashboard.ODComponent
 import operationaldashboard.ODCustomer
 import operationaldashboard.ODIncidents
+import operationaldashboard.ODOther
 import operationaldashboard.ODProblems
 import operationaldashboard.ODRequestType
 import operationaldashboard.ODThreshold
@@ -32,9 +37,14 @@ class BootStrap {
     List<CSVRecord> recordsInc
     List<CSVRecord> recordsRequestType
     List<CSVRecord> customers
-    int actIndex
+    int columnIndex
+    int rowIndex
     int prbIndex
     def emailReaderService
+    HashMap<String, Integer> actColumnIndexes
+    HashMap<String, Integer> prbColumnIndexes
+    HashMap<String, Integer> worklogColumnIndexes
+    HashMap<String, Integer> specColumnIndexes
     def init = { servletContext ->
         requestTypesCSV = new File("data/requestType.csv")
         recordsRequestType = CSVParser.parse(requestTypesCSV,  Charset.defaultCharset(),CSVFormat.DEFAULT ).getRecords()
@@ -45,39 +55,56 @@ class BootStrap {
         incCsv = new File("data/incidents.csv")
         recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
         parseINC()
-        actCSV = new File("data/activites.csv")
+        actCSV = new File("data/activities2.csv")
         recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
+        actColumnIndexes = parseColumns(recordsAct.get(4))
 
         parseACT()
         prbCSV = new File("data/problems.csv")
         recordsPrb = CSVParser.parse(prbCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
+        prbColumnIndexes = parseColumns(recordsPrb.get(4))
         parsePRB()
 //        emailReaderService.serviceMethod()
         initializeThresholds()
 
+        runAsync {
+            incCsv = new File("data/incidents.csv")
+            recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
+            parseINC()
+            actCSV = new File("data/activities2.csv")
+            recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
+                    CSVFormat.DEFAULT).getRecords()
+            actColumnIndexes = parseColumns(recordsAct.get(4))
 
+            parseACT()
+            prbCSV = new File("data/problems.csv")
+            recordsPrb = CSVParser.parse(prbCSV, Charset.defaultCharset(),
+                    CSVFormat.DEFAULT).getRecords()
+            prbColumnIndexes = parseColumns(recordsPrb.get(4))
+            parsePRB()
+        }
     }
     def destroy = {
     }
-    def parseCustomers() {
-
-        if (isRecordsEmpty(customers)) {
-            return null;
-        }
-        long numberOfRecords = customers.size();
-        for (int index = 1; index<numberOfRecords;index++) {
-
-            CSVRecord csvRecord = customers.get(index)
-            if(isValidRecord(csvRecord)) {
-                log.info(csvRecord)
-                def name = csvRecord.get(0).trim().replaceAll("^\\s+", "")
-                new ODCustomer(name: name).save(failOnError: true)
-            }
-        }
-
-    }
+//    def parseCustomers() {
+//
+//        if (isRecordsEmpty(customers)) {
+//            return null;
+//        }
+//        long numberOfRecords = customers.size();
+//        for (int index = 1; index<numberOfRecords;index++) {
+//
+//            CSVRecord csvRecord = customers.get(index)
+//            if(isValidRecord(csvRecord)) {
+//                log.info(csvRecord)
+//                def name = csvRecord.get(0).trim().replaceAll("^\\s+", "")
+//                new ODCustomer(name: name).save(failOnError: true)
+//            }
+//        }
+//
+//    }
     def parseINC() {
         if (isRecordsEmpty(recordsInc)) {
             return null;
@@ -98,18 +125,18 @@ class BootStrap {
             }
         }
     }
-    def parseRequestType() {
-        if (isRecordsEmpty(recordsRequestType)) {
-            return null;
-        }
-        long numberOfRecords = recordsRequestType.size();
-        for (int index = 1; index<numberOfRecords;index++) {
-            CSVRecord csvRecord = recordsRequestType.get(index)
-            new ODRequestType(name: csvRecord.get(0).trim()).save(failOnError: true)
-        }
-
-
-    }
+//    def parseRequestType() {
+//        if (isRecordsEmpty(recordsRequestType)) {
+//            return null;
+//        }
+//        long numberOfRecords = recordsRequestType.size();
+//        for (int index = 1; index<numberOfRecords;index++) {
+//            CSVRecord csvRecord = recordsRequestType.get(index)
+//            new ODRequestType(name: csvRecord.get(0).trim()).save(failOnError: true)
+//        }
+//
+//
+//    }
     def initializeThresholds() {
         String thresholdAttribute1 = "Number of Days Open"
         String thresholdAttribute2 = "Number of Tickets"
@@ -125,6 +152,20 @@ class BootStrap {
     def isRecordsEmpty(List<CSVRecord> records) {
         return (records.size() > 0) ? false : true
     }
+    def getAttributeValue(String attributeValue){
+        String value
+        if (attributeValue.equals(null)) {
+            attributeValue = "No Attribute"
+        }
+        else if (attributeValue.equals("")){
+            attributeValue = "No Value"
+        }
+        else {
+            attributeValue = attributeValue.trim()
+
+        }
+        return attributeValue
+    }
     def parsePRB() {
         if (isRecordsEmpty(recordsPrb)) {
             return null;
@@ -132,76 +173,59 @@ class BootStrap {
         long numberOfRecords = recordsPrb.size();
         String createdDate = recordsPrb.get((int) numberOfRecords - 1).get(0);
 
-        for (prbIndex = 4; prbIndex < numberOfRecords; prbIndex++) {
-            CSVRecord csvRecord = recordsPrb.get(prbIndex);
+        for (rowIndex = 4; rowIndex < numberOfRecords; rowIndex++) {
+            CSVRecord csvRecord = recordsPrb.get(rowIndex);
             //Parse the record if the record is not empty
 
             if (isValidRecord(csvRecord) && csvRecord.get(0).matches("PRB(.*)")) {
 
-                String id = csvRecord.get(0)
+                String id = csvRecord.get(prbColumnIndexes.get("Problem"))
                 log.info(id + "problem ids")
-                String summary = csvRecord.get(1)
-                String status = csvRecord.get(5)
-                Date reportedDate =  Date.parse(FORMAT2, csvRecord.get(6), TimeZone.getTimeZone("CDT"))
+                String summary = csvRecord.get(prbColumnIndexes.get("Summary"))
+                String status = csvRecord.get(prbColumnIndexes.get("Status"))
+                Date reportedDate =  Date.parse(FORMAT2, csvRecord.get(prbColumnIndexes.get("Reported Date")), TimeZone.getTimeZone("CDT"))
                 Date targetFinish
                 int numberOfDaysOpen
-                if  (csvRecord.get(9).equals("")) {
+                if  (csvRecord.get(prbColumnIndexes.get("Target Finish")).equals("")) {
                     targetFinish = null
                     use(groovy.time.TimeCategory) {
                         numberOfDaysOpen = (new Date() - reportedDate).days
                     }
                 }
                 else {
-                    targetFinish = Date.parse(FORMAT2, csvRecord.get(9), TimeZone.getTimeZone("CDT"))
+                    targetFinish = Date.parse(FORMAT2, csvRecord.get(prbColumnIndexes.get("Target Finish")), TimeZone.getTimeZone("CDT"))
                     use(groovy.time.TimeCategory) {
                         numberOfDaysOpen = (targetFinish - reportedDate).days
                     }
                 }
-                String priority = csvRecord.get(11)
+                String priority = csvRecord.get(prbColumnIndexes.get("Priority"))
 
 
                 log.info(numberOfDaysOpen)
 
 
 //                Date statusDate = Date.parse(FORMAT2, csvRecord.get(11))
-                String owner = csvRecord.get(13)
-                String ownerGroup = csvRecord.get(15)
-                String responsibleGroup = csvRecord.get(18)
-                String environment = csvRecord.get(20);
-//                String relatedRecord = csvRecord.get(21);
-                List<ODWorklog>logs = parsePRBWorklog()
-                HashMap<String, String> spec = parsePRBSpec()
+                String owner = csvRecord.get(prbColumnIndexes.get("Owner"))
+                String ownerGroup = csvRecord.get(prbColumnIndexes.get("Owner Group"))
+                String responsibleGroup = csvRecord.get(prbColumnIndexes.get("Responsible Group"))
+                String environment = csvRecord.get(prbColumnIndexes.get("Environment"));
+//
+                List<ODWorklog>logs = parseWorklog(recordsPrb, "work log")
+                HashMap<String, String> spec = parseSpec(recordsPrb)
 
-                //Create a new instance of 'Activity'
-                ODRequestType  type
-                String requestTypeName
-                if (spec.get("MRSREQUEST").equals(null)) {
-                    requestTypeName = "No Attribute"
-                }
-                else if (spec.get("MRSREQUEST").equals("")){
-                    requestTypeName = "No Value"
-                }
-                else {
-                    requestTypeName = spec.get("MRSREQUEST").trim()
 
-                }
-                type  = ODRequestType.findOrSaveByName(requestTypeName)
-                String customerName
-                if (spec.get("MRSCUSTOMER").equals(null)) {
-                    customerName = "No Attribute"
-                }
-                else if (spec.get("MRSCUSTOMER").equals("")){
-                    customerName = "No Value"
-                }
-                else {
-                    customerName = spec.get("MRSCUSTOMER").trim()
+                ODRequestType  requestType  = ODRequestType.findOrSaveByName( getAttributeValue(spec.get("MRSREQUEST")))
+                ODCustomer customer = ODCustomer.findOrSaveByName(getAttributeValue(spec.get("MRSCUSTOMER")))
+                ODComponent component = ODComponent.findOrSaveByValue(getAttributeValue(spec.get("MRSCOMPONENT")))
+                ODAccess access = ODAccess.findOrSaveByValue(getAttributeValue(spec.get("MRSACCESS")))
+                ODOther other = ODOther.findOrSaveByValue(getAttributeValue(spec.get("MRSOTHER")))
+                ODBreakFix breakFix = ODBreakFix.findorSaveByValue(getAttributeValue(spec.get("MRSBREAKFIX")))
 
-                }
-                ODCustomer customer = ODCustomer.findOrSaveByName(customerName)
+
                 parseRelatedRecord()
                 def problem = new ODProblems(ticketID:
                         id, summary: summary, status: status, priority: priority, reportedDate: reportedDate, owner: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
-                        customer: customer, requestType: type, numberOfDaysOpen: numberOfDaysOpen)
+                        customer: customer, requestType: requestType, numberOfDaysOpen: numberOfDaysOpen, component:component, access:access, other:other, breakFix:breakFix)
                 problem.save(failOnError: true)
 
                 for (log in logs) {
@@ -222,6 +246,36 @@ class BootStrap {
             }
         }
     }
+    def parseColumns(CSVRecord csvRecord) {
+        Map<String, Integer> columnIndexes = new HashMap<String, Integer>()
+        int numberOfColumns
+        for (int i = 0; i< csvRecord.size(); i++) {
+
+           if (!csvRecord.get(i).equals("") && !csvRecord.get(i).equals(null)) {
+               columnIndexes.put(csvRecord.get(i), i)
+               log.info(csvRecord.get(i))
+           }
+
+        }
+
+
+        return columnIndexes
+    }
+    private def parseACTRelatedRecord() {
+//        TODO
+        rowIndex++
+        if (!recordsAct.get(rowIndex).get(0).matches("(.*)All the related workorders(.*)")) {
+            return null;
+        }
+        rowIndex=rowIndex+2
+        while (isValidRecord(recordsAct.get( rowIndex))) {
+            String record = recordsAct.get( rowIndex).get(0)
+            rowIndex++
+        }
+
+        return
+
+    }
     def parseACT()  {
         if (isRecordsEmpty(recordsAct)) {
             return null;
@@ -229,63 +283,45 @@ class BootStrap {
         long numberOfRecords = recordsAct.size();
         String createdDate = recordsAct.get((int) numberOfRecords - 1).get(0);
 
-        for (int index = 4; index < numberOfRecords; index++) {
-            CSVRecord csvRecord = recordsAct.get(index);
+        for (rowIndex = 4; rowIndex < numberOfRecords; rowIndex++) {
+            CSVRecord csvRecord = recordsAct.get(rowIndex);
             //Parse the record if the record is not empty
 
             if (isValidRecord(csvRecord) && csvRecord.get(0).matches("ACT(.*)")) {
-
-                String id = csvRecord.get(0)
-                String summary = csvRecord.get(1)
-                String status = csvRecord.get(5)
-
-                String priority = csvRecord.get(7)
-                Date actualStart =  Date.parse(FORMAT2, csvRecord.get(8), TimeZone.getTimeZone("CDT"))
+                columnIndex = 0
+                String id = csvRecord.get(actColumnIndexes.get("Activity"))
+                String summary = csvRecord.get(actColumnIndexes.get("Summary"))
+                String status = csvRecord.get(actColumnIndexes.get("Status"))
+                log.info(id)
+                String priority = csvRecord.get(actColumnIndexes.get("Priority"))
+                Date actualStart =  Date.parse(FORMAT2,csvRecord.get(actColumnIndexes.get("Actual Start")), TimeZone.getTimeZone("CDT"))
+//                String actualTime = parseColumn(csvRecord)
+                String owner = csvRecord.get(actColumnIndexes.get("Owner"))
+                String ownerGroup = csvRecord.get(actColumnIndexes.get("Owner Group"))
+                String responsibleGroup = csvRecord.get(actColumnIndexes.get("Responsible Group"))
+                String environment = csvRecord.get(actColumnIndexes.get("Environment"))
+                Date statusDate = Date.parse(FORMAT2, csvRecord.get(actColumnIndexes.get("Status Date")))
                 int numberOfDaysOpen
 
                     DateFormat dateFormat =  DateFormat.getDateTimeInstance()
                             dateFormat.setTimeZone(TimeZone.getTimeZone("CDT"))
                      numberOfDaysOpen =  new Date() - actualStart
                     log.info(numberOfDaysOpen)
-
-
-                Date statusDate = Date.parse(FORMAT2, csvRecord.get(11))
-                String owner = csvRecord.get(14)
-                String ownerGroup = csvRecord.get(15)
-                String responsibleGroup = csvRecord.get(16)
-                String environment = csvRecord.get(19);
-                String relatedRecord = csvRecord.get(21);
-                HashMap<String, String> spec = parseSpec(recordsAct, index + 4)
-                List<ODWorklog>logs = parseACTWorklog(index + 8)
+//                String relatedRecord = csvRecord.get(21);
+                parseACTRelatedRecord()
+                HashMap<String, String> spec = parseACTSpec(recordsAct)
+                List<ODWorklog>logs = parseWorklog(recordsAct, "worklog")
                 //Create a new instance of 'Activity'
-                ODRequestType  type
-                String requestTypeName
-                if (spec.get("MRSREQUEST").equals(null)) {
-                    requestTypeName = "No Attribute"
-                }
-                else if (spec.get("MRSREQUEST").equals("")){
-                    requestTypeName = "No Value"
-                }
-                else {
-                    requestTypeName = spec.get("MRSREQUEST").trim()
+                ODRequestType  requestType  = ODRequestType.findOrSaveByName( getAttributeValue(spec.get("MRSREQUEST")))
+                ODCustomer customer = ODCustomer.findOrSaveByName(getAttributeValue(spec.get("MRSCUSTOMER")))
+                ODComponent component = ODComponent.findOrSaveByValue(getAttributeValue(spec.get("MRSCOMPONENT")))
+                ODAccess access = ODAccess.findOrSaveByValue(getAttributeValue(spec.get("MRSACCESS")))
+                ODOther other = ODOther.findOrSaveByValue(getAttributeValue(spec.get("MRSOTHER")))
+                ODBreakFix breakFix = ODBreakFix.findorSaveByValue(getAttributeValue(spec.get("MRSBREAKFIX")))
 
-                }
-                type  = ODRequestType.findOrSaveByName(requestTypeName)
-                String customerName
-                if (spec.get("MRSCUSTOMER").equals(null)) {
-                    customerName = "No Attribute"
-                }
-                else if (spec.get("MRSCUSTOMER").equals("")){
-                    customerName = "No Value"
-                }
-                else {
-                    customerName = spec.get("MRSCUSTOMER").trim()
-
-                }
-                ODCustomer customer = ODCustomer.findOrSaveByName(customerName)
-               def activity = new ODActivities(ticketID:
+                def activity = new ODActivities(ticketID:
                         id, summary: summary, status: status, priority: priority, actualStart: actualStart, statusDate: statusDate, personName: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
-                        customer: customer, requestType: type, relatedRecord: relatedRecord, numberOfDaysOpen: numberOfDaysOpen)
+                        customer: customer, requestType: requestType, component:component, accessAtr:access,other:other, breakFix:breakFix, numberOfDaysOpen: numberOfDaysOpen)
                 activity.save(failOnError: true)
 
                 for (log in logs) {
@@ -306,75 +342,72 @@ class BootStrap {
         }
 
     }
-    private List<ODWorklog> parseACTWorklog(int index) {
+    private List<ODWorklog> parseWorklog(List<CSVRecord> records, String regExp) {
         List<ODWorklog> logs = new ArrayList<ODWorklog> ();
-
-        if (!recordsAct.get(index).get(0).matches("(.*)worklog(.*)")) {
+        rowIndex = rowIndex + 2
+        if (!records.get(rowIndex).get(0).matches("(.*)" + regExp + "(.*)")) {
             return logs;
         }
-        index = index + 2;
-        CSVRecord record = recordsAct.get(index);
+        worklogColumnIndexes = parseColumns(records.get(rowIndex + 1))
+        rowIndex = rowIndex + 2;
+        CSVRecord record = records.get(rowIndex);
         while (isValidRecord(record)) {
 
-            Date date = new Date().parse(FORMAT2, record.get(0));
-            String createdBy = record.get(3);
-            String summary = record.get(6);
-
+            Date date = new Date().parse(FORMAT2, record.get(worklogColumnIndexes.get("Date")));
+            String createdBy = record.get(worklogColumnIndexes.get("Created By"));
+            String summary = record.get(worklogColumnIndexes.get("Summary"));
+            log.info(summary)
             logs.add(new ODWorklog(createdDate: date, createdBy: createdBy, summary:summary));
-            record = recordsAct.get(++index);
+            record = records.get(++rowIndex);
         }
         return logs;
 
     }
-    private List<ODWorklog> parsePRBWorklog() {
-        List<ODWorklog> logs = new ArrayList<ODWorklog> ();
-        prbIndex = prbIndex + 2
-        if (!recordsPrb.get(prbIndex).get(0).matches("(.*)work log(.*)")) {
-            return logs;
-        }
-        prbIndex = prbIndex + 2;
-        CSVRecord record = recordsPrb.get(prbIndex);
-        while (isValidRecord(record)) {
 
-            Date date = new Date().parse(FORMAT2, record.get(0));
-            String createdBy = record.get(3);
-            String summary = record.get(7);
-
-            logs.add(new ODWorklog(createdDate: date, createdBy: createdBy, summary:summary));
-            record = recordsPrb.get(++prbIndex);
-        }
-        return logs;
-
-    }
-    private HashMap<String, String> parsePRBSpec() {
-        prbIndex = prbIndex + 3
+    private HashMap<String, String> parseSpec(List<CSVRecord> records) {
         HashMap<String, String> specs = new HashMap<String, String>();
-        while (isValidRecord(recordsPrb.get( prbIndex))) {
-            String attribute = recordsPrb.get( prbIndex).get(0)
-            String value = recordsPrb.get( prbIndex).get(12)
-
-            specs.put(attribute, value)
-            prbIndex++
+        rowIndex = rowIndex + 1
+        if (!records.get(rowIndex).get(0).matches("(.*)All the specifications(.*)")) {
+            return specs;
         }
-//        String customer = recordsAct.get(index).get(12);
-//        String component = recordsAct.get(index + 1).get(12);
-//        String request = recordsAct.get(index + 2).get(12);
-//        specs.put("customer", customer);
-//        specs.put("component", component);
-//        specs.put("request", request);
-
+        rowIndex = rowIndex + 2
+        while (isValidRecord(records.get(rowIndex))) {
+            String attribute = records.get(rowIndex).get(0)
+            String value = records.get(rowIndex).get(12)
+            specs.put(attribute, value)
+            rowIndex++
+        }
         return specs
     }
+    //This will be dropped once act report is fixed
+    private HashMap<String, String> parseACTSpec(List<CSVRecord> records) {
+        HashMap<String, String> specs = new HashMap<String, String>();
+        rowIndex = rowIndex + 1
+        if (!records.get(rowIndex).get(0).matches("(.*)All the specifications(.*)")) {
+            return specs;
+        }
+        rowIndex++
+        specColumnIndexes = parseColumns(records.get(rowIndex))
+        rowIndex++
+        while (isValidRecord(records.get(rowIndex))) {
+            String attribute = records.get(rowIndex).get(specColumnIndexes.get("Attribute"))
+            String value = records.get(rowIndex).get(specColumnIndexes.get("Alphanumeric Value"))
+            specs.put(attribute, value)
+            rowIndex++
+        }
+        return specs
+    }
+
     private def parseRelatedRecord() {
        ODActivities activity
         ODIncidents  incident
-        prbIndex++
-        if (!recordsPrb.get(prbIndex).get(0).matches("(.*)related records(.*)")) {
+        ++rowIndex
+        if (!recordsPrb.get(rowIndex).get(0).matches("(.*)related records(.*)")) {
             return null;
         }
-        prbIndex=prbIndex+2
-        while (isValidRecord(recordsPrb.get( prbIndex))) {
-            String record = recordsPrb.get( prbIndex).get(0)
+        rowIndex=rowIndex+2
+        while (isValidRecord(recordsPrb.get( rowIndex))) {
+            String record = recordsPrb.get( rowIndex).get(0)
             if (record.matches("ACT(.*)")) {
                activity = ODActivities.findByTicketID(record)
 
@@ -384,30 +417,14 @@ class BootStrap {
 
             }
 
-            prbIndex++
+
+            rowIndex++
         }
 
         return [activity: activity, incident:incident]
 
     }
-    private HashMap<String, String> parseSpec(List<CSVRecord> records, index) {
-        HashMap<String, String> specs = new HashMap<String, String>();
-        while (isValidRecord(records.get(index))) {
-            String attribute = records.get(index).get(0)
-            String value = records.get(index).get(12)
 
-                specs.put(attribute, value)
-            index++
-        }
-//        String customer = recordsAct.get(index).get(12);
-//        String component = recordsAct.get(index + 1).get(12);
-//        String request = recordsAct.get(index + 2).get(12);
-//        specs.put("customer", customer);
-//        specs.put("component", component);
-//        specs.put("request", request);
-
-        return specs
-    }
     /* This function determines if a record (row) is empty or null
 	 * Returns Boolean
 	 * */

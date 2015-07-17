@@ -15,7 +15,10 @@ class ODActivities {
     Date statusDate
     String env
     ODCustomer customer
-    String relatedRecord
+    ODAccess accessAtr
+    ODBreakFix breakFix
+    ODOther other
+    ODComponent component
     ODRequestType requestType
     static hasMany = [worklogs:ODWorklog]
     int numberOfDaysOpen
@@ -26,22 +29,26 @@ class ODActivities {
         status blank: true, nullable: true
         actualStart nullable: true
         statusDate nullable: true
-        relatedRecord blank:true
         customer nullable: true
-        personName blank: true
+        personName blank: true, nullable:true
         responsibleGroup blank: true, nullable:true
         ownerGroup blank: true, nullable: true
         requestType blank: true, nullable: true
         env blank:true, nullable:true
         priority nullable: true
         relatedIncident nullable: true
+        accessAtr blank:true, nullable: true
+        other blank:true, nullable: true
+        breakFix blank:true, nullable: true
+        component blank:true, nullable: true
     }
     static mapping = {
         customer index:true
         env index:true
-        relatedRecord index: true
+
 
     }
+
 
 
 

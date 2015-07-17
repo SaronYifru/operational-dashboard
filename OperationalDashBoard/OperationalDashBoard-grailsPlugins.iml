@@ -44,6 +44,9 @@
     <content url="file://$MODULE_DIR$/target/work/plugins/excel-import-1.0.0">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/excel-import-1.0.0/src/groovy" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/target/work/plugins/executor-0.3">
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/executor-0.3/src/groovy" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/jbossas-1.0">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jbossas-1.0/src/groovy" isTestSource="false" />
     </content>

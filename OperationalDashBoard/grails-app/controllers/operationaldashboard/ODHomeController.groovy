@@ -55,7 +55,7 @@ class ODHomeController {
             log.info(type.name)
             int threshold = ODThreshold.findByType(type).thresholdValue
             def typeAlertWorklog = className.countByRequestTypeAndWorklogsIsNotNull(type.id, threshold)
-            def typeAlertNoWorklog = className.countByRequestType(type.id, threshold)
+            def typeAlertNoWorklog = className.countByRequestTypeAndWorklogsIsNull(type.id, threshold)
             alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name])
             log.info(" tickets by request type: " + typeAlertNoWorklog)
         }
@@ -79,11 +79,11 @@ class ODHomeController {
 //            String c= "6687 - KEYBANK NATIONAL ASSOCIATION - RPS"
             int numberOfTickets
             if (relatedRecord) {
-                numberOfTickets = className.countByCustomerAndEnvAndRelatedRecordIsNull(customer, environment)
+                numberOfTickets = className.countByCustomerAndEnvAndRelatedIncidentNotIsNull(customer, environment)
                 //activitiesService.getCustomerAct(customer.name)
             }
             else {
-                numberOfTickets = className.countByCustomerAndEnvAndRelatedRecordIsNotNull(customer, environment)
+                numberOfTickets = className.countByCustomerAndEnvAndRelatedIncidentIsNull(customer, environment)
 
             }
 //            log.info(ODActivities.countByCustomer("6687 - KEYBANK NATIONAL ASSOCIATION - RPS"))

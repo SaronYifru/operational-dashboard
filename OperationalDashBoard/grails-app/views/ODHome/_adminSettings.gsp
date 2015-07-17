@@ -15,7 +15,7 @@
             <tr>
                 <g:formRemote name="customerForm"
                               url="[controller: 'ODCustomer', action: 'addCustomer',
-                                    ]">
+                                    ]" onSuccess="updateCustomersTable(data)">
 
 
                 <div class="row">
@@ -37,16 +37,7 @@
             </thead>
             <tbody>
 
-            <g:each in="${customers}" var="customer">
-                <tr>
-                   <td>
-                       <g:checkBox name="focusFlag" value="${customer.focusFlag}" checked="${customer?.focusFlag == true}" onclick="${remoteFunction(controller:'ODCustomer', action:'SetFocusFlag', id:"${customer.id}",
-                               params:'\'focusFlag=\' + this.checked')}"/>
-
-                   </td>
-                    <td>${customer.name}</td>
-                </tr>
-            </g:each>
+            <g:render template="../ODCustomer/customerTableRows" model="[customers:customers]" />
             </tbody>
             </table>
 
@@ -56,6 +47,7 @@
         <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="thresholdsTable">
             <thead>
             <tr>
+                <th>Focus Flag</th>
                 <th>Request Type</th>
                 <th>Attribute</th>
                 <th>Value</th>
@@ -66,14 +58,18 @@
 
             <g:each in="${thresholds}" var="threshold">
                 <tr>
+
                     <g:if test="${threshold.type == null}">
+                        <td></td>
                         <td>All Request Types</td>
                     </g:if>
-                    <g:else><td>${threshold.type.name}</td></g:else>
+                    <g:else> <td><g:checkBox name="focusFlag" value="" checked="" onclick="${remoteFunction(controller:'ODCustomer', action:'SetFocusFlag', id:"${threshold.type.id}",
+                            params:'\'focusFlag=\' + this.checked')}"/></td>
+                        <td>${threshold.type.name}</td></g:else>
 
                     <td>${threshold.attribute}</td>
                     <td>
-                        <a  class="firstname" data-pk="" id="${threshold.id}" class="editable editable-click editable-empty" data-type="text"  data-placement="right"
+                        <a  class="thresholdValue" data-pk="" id="${threshold.id}" class="editable editable-click editable-empty" data-type="text"  data-placement="right"
                             style="display: inline;" data-url="../ODThreshold/setThreshold">${threshold.thresholdValue}</a> </td>
 
                 </tr>
@@ -88,18 +84,17 @@
 
     $.fn.editable.defaults.mode = 'inline';
     $(document).ready(function() {
-        $('.firstname').editable({
+        $('.thresholdValue').editable({
 
         });
     });
-    function updateCustomersTable(data) {
-        var table = document.getElementById("customersTable").getElementsByTagName('tbody')[0];
-        var row = table.insertRow(0);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        cell2.innerHTML = "Test Customer";
-        cell1.innerHTML = "Test Focus";
-        %{--${remoteFunction (controller: "ODThreshold", action:"setThreshold")}--}%
-        alert("save")
+    function updateCustomersTable(html) {
+        $("#customersTable>tbody").append(html);
+        var window = $(window);
+        var rowCount = $('#customersTable>tbody >tr').length
+        var row = $('#customersTable').find('tr').eq( rowCount );
+        if (row.length){
+            $('html,body').animate({scrollTop: row.offset().top - (window.height()/2)}, 1000 );
+        }
     }
 </script>

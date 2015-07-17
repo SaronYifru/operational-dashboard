@@ -16,6 +16,10 @@
 <th style="white-space:nowrap;"><a>Environment</a></th>
 <th style="white-space:nowrap;"><a>Customer</a></th>
 <th style="white-space:nowrap;"><a>RequestType</a></th>
+    <th style="white-space:nowrap;"><a>Component</a></th>
+    <th style="white-space:nowrap;"><a>Access</a></th>
+    <th style="white-space:nowrap;"><a>Other</a></th>
+    <th style="white-space:nowrap;"><a>Break Fix</a></th>
 <th style="white-space:nowrap;"><a>Worklog</a></th>
 <th style="white-space:nowrap;"><a>Alerts</a></th>
 <th style="white-space:nowrap;"><a>Related Record</a></th>
@@ -35,6 +39,10 @@
 <th><a>Environment</a></th>
 <th class="col-md-3"><a>Customer</a></th>
 <th><a>RequestType</a></th>
+    <th><a>Component</a></th>
+    <th><a>Access</a></th>
+    <th><a>Other</a></th>
+    <th><a>Break Fix</a></th>
 <th><a>Worklog</a></th>
 <th><a>Alerts</a></th>
 <th><a>Related Record</a></th>
@@ -59,6 +67,10 @@
             <td>${activity.env}</td>
             <td>${activity.customer.name}</td>
             <td>${activity.requestType.name}</td>
+            <td><g:if test="${activity.component != null}">${activity.component.value}</g:if></td>
+            <td><g:if test="${activity.accessAtr != null}">${activity.accessAtr.value}</g:if></td>
+            <td><g:if test="${activity.other != null}">${activity.other.value}</g:if></td>
+            <td><g:if test="${activity.breakFix != null}">${activity.breakFix.value}</g:if></td>
             <td>${activity.worklogs.isEmpty()? "No" : "Yes"}</td>
             <td title="Alert Reason">${(new Date() - activity.statusDate) > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>
 

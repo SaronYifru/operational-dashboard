@@ -81,6 +81,7 @@ grails.project.dependency.resolution = {
         compile ":asset-pipeline:2.1.5"
        // compile ":excel-import:1.0.0"
         compile ':mongodb:3.0.3'
+        compile ":executor:0.3"
 
         compile ":mongodb-create-drop:1.0.2"
         // plugins needed at runtime but not for compilation

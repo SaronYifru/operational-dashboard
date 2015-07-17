@@ -6,6 +6,6 @@ class ODWorklog {
     String summary
     static belongsTo = ODActivities
     static constraints = {
-        summary blank:false
+        summary blank:false, nullable: true
     }
 }

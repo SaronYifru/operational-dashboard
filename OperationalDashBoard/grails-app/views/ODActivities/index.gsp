@@ -106,6 +106,10 @@
                 { type: "select"},
                 { type: "select"},
                 { type: "select"},
+                { type: "select"},
+                { type: "select"},
+                { type: "select"},
+                { type: "select"},
                 { type: "text"}
 
             ],

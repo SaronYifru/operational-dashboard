@@ -16,6 +16,11 @@ class ODProblems {
     static hasMany = [worklogs:ODWorklog]
     int numberOfDaysOpen
     ODIncidents relatedIncident
+    ODAccess access
+    ODBreakFix breakFix
+    ODOther other
+    ODComponent component
+
 
     static constraints = {
         ticketID unique:true
@@ -28,6 +33,10 @@ class ODProblems {
         env blank:true, nullable:true
         priority nullable: true
         targetFinish nullable: true
+        access blank:true, nullable: true
+        other blank:true, nullable: true
+        breakFix blank:true, nullable: true
+        component blank:true, nullable: true
     }
 
 
