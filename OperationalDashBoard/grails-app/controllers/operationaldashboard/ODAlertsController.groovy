@@ -1,6 +1,0 @@
-package operationaldashboard
-
-class ODAlertsController {
-
-
-}

@@ -31,14 +31,19 @@
     <asset:stylesheet src="/OperationalDashboard/columnReorder.css"/>
     %{--<asset:javascript src="expandableTable.js"/>--}%
     <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
+    <asset:stylesheet src="/OperationalDashboard/jquery-ui.css"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="dataTablesResponsive.js"/>
     <asset:javascript src="columnResize.js"/>
     <asset:javascript src="columnVis.js"/>
+    <asset:javascript src="datatables-bootstrap.js"/>
     <asset:stylesheet src="/OperationalDashboard/columnVis.css"/>
     <asset:stylesheet src="/OperationalDashboard/dataTablesResponsive.css"/>
-
+    <asset:stylesheet src="/OperationalDashboard/datatables-jquery-ui.css"/>
+    <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
+    <asset:javascript src="jquery-datatable.js"/>
+    <asset:javascript src="jquery-ui.js"/>
     <title>OPD - Activities</title>
 </head>
 
@@ -47,7 +52,8 @@
     function format ( d ) {
     // `d` is the original data object for the row
 
-    var t = '<table class="table table-striped">'+
+    var t =  '<div class="slider">'+
+            '<table class="table table-striped " cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<thead>' +
         '<tr>' +
              '<th>Date</th>' +
@@ -66,7 +72,7 @@
                  '</tr>'
             }
            t = t.concat('</tbody>' +
-                '</table>') ;
+                '</table>' + '</div>') ;
 
     return t
 }
@@ -77,9 +83,13 @@
         worklogsData = worklogs
     }
     $(document).ready(function () {
+
        table = $('#activitiesTable').dataTable({
+
+           "autoWidth": true,
             "dom": 'Rlfrtip',
             "dom": 'C<"clear">RZlfrtip',
+           "sPaginationType" : "full_numbers",
             "colResize": {
             "tableWidthFixed": false
               },
@@ -87,7 +97,10 @@
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
-            "paging": false,
+           "iDisplayLength" : 10,
+            "paging": true,
+           "jQueryUI": true
+
 
         }).columnFilter({
             sPlaceHolder: "head:after",
@@ -101,7 +114,6 @@
                 { type: "select"},
                 { type: "select"},
               { type: "text"  },
-                { type: "select"},
                 { type: "select"},
                 { type: "select"},
                 { type: "select"},
@@ -130,8 +142,10 @@
             console.log(worklogsData)
             if ( row.child.isShown() ) {
                 // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
+                $('div.slider', row.child()).slideUp( function () {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                });
             }
             else {
 
@@ -141,6 +155,12 @@
                 $('div.slider', row.child()).slideDown();
             }
         })
+        $("#activitiesTable").tabs( {
+            "activate": function(event, ui) {
+                $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+            }
+        } );
+
 
 });
 
@@ -152,9 +172,11 @@
     <h1>Activities</h1>
     <g:if test="${customerName != null}">
         <h3>${customerName}</h3>
-        <span> <g:link controller="ODActivities">All Activities</g:link></span>
+        <span> <g:link controller="ODActivities">View All Activities</g:link></span>
     </g:if>
-    <g:render template="activitiesDetails" model="[activities: activities]"/>
+    <div class="row">
+        <g:render template="activitiesDetails" model="[activities: activities]"/>
+    </div>
 </div>
 
 %{--<g:render template="/sections/footer"/>--}%

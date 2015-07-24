@@ -17,7 +17,7 @@
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     %{--<!-- Latest compiled and minified JavaScript -->--}%
 
 
@@ -29,6 +29,8 @@
     <asset:stylesheet src="/OperationalDashboard/homeStyle.css"/>
     <asset:stylesheet src="/OperationalDashboard/dataTable.css"/>
     <asset:stylesheet src="/OperationalDashboard/columnReorder.css"/>
+    <asset:stylesheet src="/OperationalDashboard/jquery-ui.css"/>
+
     %{--<asset:javascript src="expandableTable.js"/>--}%
     <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
     <asset:javascript src="columnFilter.js"/>
@@ -36,8 +38,13 @@
     <asset:javascript src="dataTablesResponsive.js"/>
     <asset:javascript src="columnResize.js"/>
     <asset:javascript src="columnVis.js"/>
+    <asset:javascript src="datatables-bootstrap.js"/>
     <asset:stylesheet src="/OperationalDashboard/columnVis.css"/>
     <asset:stylesheet src="/OperationalDashboard/dataTablesResponsive.css"/>
+    <asset:stylesheet src="/OperationalDashboard/datatables-jquery-ui.css"/>
+    <asset:stylesheet src="/OperationalDashboard/datatables-bootstrap.css"/>
+    <asset:javascript src="jquery-datatable.js"/>
+    <asset:javascript src="jquery-ui.js"/>
 
     <title>OPD - Activities</title>
 </head>
@@ -47,7 +54,8 @@
     function format ( d ) {
         // `d` is the original data object for the row
 
-        var t = '<table class="table table-striped">'+
+        var t = '<div class="slider">'+
+                '<table class="table table-striped">'+
                 '<thead>' +
                 '<tr>' +
                 '<th>Date</th>' +
@@ -66,7 +74,7 @@
                     '</tr>'
         }
         t = t.concat('</tbody>' +
-                '</table>') ;
+                '</table>' + '</div>') ;
 
         return t
     }
@@ -78,6 +86,9 @@
     }
     $(document).ready(function () {
         table = $('#problemsTable').dataTable({
+
+                "jQueryUI": true,
+            "autoWidth": true,
             "dom": 'Rlfrtip',
             "dom": 'C<"clear">RZlfrtip',
             "colResize": {
@@ -87,7 +98,7 @@
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
-            "paging": false,
+            "paging": true
 
         }).columnFilter({
             sPlaceHolder: "head:after",
@@ -97,11 +108,11 @@
                 { type: "select"  },
                 { type: "select"  },
                 { type: "text"  },
+                {type: "select"},
                 { type: "select"},
                 { type: "select"},
                 { type: "select"},
                 { type: "text"  },
-                { type: "select"},
                 { type: "select"},
                 { type: "select"},
                 { type: "select"},
@@ -130,8 +141,10 @@
             console.log(worklogsData)
             if ( row.child.isShown() ) {
                 // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
+                $('div.slider', row.child()).slideUp( function () {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                })
             }
             else {
 
@@ -141,6 +154,11 @@
                 $('div.slider', row.child()).slideDown();
             }
         })
+        $("#problemsTable").tabs( {
+            "activate": function(event, ui) {
+                $( $.fn.dataTable.tables( true ) ).DataTable().columns.adjust();
+            }
+        } );
 
     });
 

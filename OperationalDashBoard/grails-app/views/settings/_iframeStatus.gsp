@@ -1,0 +1,1 @@
+<g:if test="${flash.message}"><span class="message" role="status">${flash.message}</span></g:if>

@@ -7,7 +7,7 @@ class UrlMappings {
             }
         }
 
-        "/"(view:"/index")
+        "/"(controller: "ODHome/index")
         "500"(view:'/error')
 	}
 }

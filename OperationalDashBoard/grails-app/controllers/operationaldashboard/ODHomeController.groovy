@@ -2,6 +2,8 @@ package operationaldashboard
 
 class ODHomeController {
     def customerService
+    def reportDataUpdaterService
+    def progressService
     def index() {
 
        def actSummary = loadACTSummary()
@@ -11,6 +13,10 @@ class ODHomeController {
 
       [actSummary: actSummary, prbSummary: prbSummary, actAlertsByRequest: getAlerts(ODActivities), prbAlertsByRequest:getAlerts(ODProblems), requestType:requestType, customers:ODCustomer.list(), thresholds:ODThreshold.list()]
 
+    }
+    def updateData() {
+        reportDataUpdaterService.updateReports()
+       redirect(action: 'index')
     }
     def getJson() {
         def actSummary = loadACTSummary()
@@ -48,16 +54,22 @@ class ODHomeController {
                 customerRequestSummary: unknownCustomerRequestSummary]]
     }
     def getAlerts(Class className) {
-        def requestTypes = ODRequestType.list()
+        def requestTypes = ODRequestType.findAllByFocusFlag(true)
+        if (requestTypes.size() == 0) {
+            requestTypes = ODRequestType.list()
+        }
         def alerts= []
         //These will be uploadable by user
         for (type in requestTypes) {
             log.info(type.name)
-            int threshold = ODThreshold.findByType(type).thresholdValue
-            def typeAlertWorklog = className.countByRequestTypeAndWorklogsIsNotNull(type.id, threshold)
-            def typeAlertNoWorklog = className.countByRequestTypeAndWorklogsIsNull(type.id, threshold)
-            alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name])
-            log.info(" tickets by request type: " + typeAlertNoWorklog)
+            def threshold = ODThreshold.findByType(type).thresholdValue
+            def typeAlertWorklog =className.countByRequestTypeAndWorklogsIsNotNullAndNumberOfDaysOpenGreaterThanEquals(type.id, threshold)
+            def typeAlertNoWorklog = className.countByRequestTypeAndWorklogsIsNullAndNumberOfDaysOpenGreaterThanEquals(type.id, threshold)
+            if (typeAlertWorklog > 0 || typeAlertNoWorklog > 0) {
+                alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name, Id: type.id])
+                log.info(" tickets by request type: " + typeAlertNoWorklog)
+            }
+
         }
        alerts as grails.converters.JSON
     }

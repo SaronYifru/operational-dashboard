@@ -1,5 +1,5 @@
 
-<div class="table-responsive" style="overflow-x: auto">
+<div class="col-sm-12"  style="overflow-x: auto">
 <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="activitiesTable">
 <thead>
 <tr>
@@ -21,7 +21,7 @@
     <th style="white-space:nowrap;"><a>Other</a></th>
     <th style="white-space:nowrap;"><a>Break Fix</a></th>
 <th style="white-space:nowrap;"><a>Worklog</a></th>
-<th style="white-space:nowrap;"><a>Alerts</a></th>
+
 <th style="white-space:nowrap;"><a>Related Record</a></th>
 
 </tr>
@@ -44,7 +44,6 @@
     <th><a>Other</a></th>
     <th><a>Break Fix</a></th>
 <th><a>Worklog</a></th>
-<th><a>Alerts</a></th>
 <th><a>Related Record</a></th>
 
 </tr>
@@ -72,7 +71,7 @@
             <td><g:if test="${activity.other != null}">${activity.other.value}</g:if></td>
             <td><g:if test="${activity.breakFix != null}">${activity.breakFix.value}</g:if></td>
             <td>${activity.worklogs.isEmpty()? "No" : "Yes"}</td>
-            <td title="Alert Reason">${(new Date() - activity.statusDate) > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>
+            %{--<td title="Alert Reason">${(new Date() - activity.statusDate) > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>--}%
 
             <td><g:if test="${activity.relatedIncident != null}">
                 <g:link id="${activity.relatedIncident.relatedPRB}" controller="ODProblems" action="getTicket">${activity.relatedIncident.relatedPRB}</g:link></g:if></td>

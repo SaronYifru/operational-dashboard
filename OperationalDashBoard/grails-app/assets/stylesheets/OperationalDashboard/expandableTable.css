@@ -14,3 +14,10 @@ div.slider {
 table.dataTable tbody td.no-padding {
     padding: 0;
 }
+#activitiesTable {
+    min-height: 400px;
+    max-height: 800px;
+}
+td {
+    word-wrap:break-word
+}

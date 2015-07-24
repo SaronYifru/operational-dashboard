@@ -86,11 +86,25 @@
         top: 100%;
         left: 0;
     }
+    .barLegend2 span {
+        margin: 5px;
+        width: 25.5%;
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
+        color: white;
+    }
+    .barLegend tr {
+        margin: 5px;
+
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
+    }
     </style>
 
 
-    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
 </head>
 
 <body>
@@ -99,8 +113,6 @@
         <g:render template="/ODHome/tabs" model="[actSummary: actSummary, prbSummary: prbSummary, actAlertsByRequest:actAlertsByRequest, prbAlertsByRequest:prbAlertsByRequest, requestType: requestType, customers:customers, thresholds:thresholds]"/>
 
     </div>
-    %{--<g:render template="/sections/footer"/>--}%
-    %{--</div>--}%
 
 
 </body>

@@ -8,6 +8,7 @@
             <th><a>Status</a></th>
             <th><a>Priority</a></th>
             <th ><a>Reported Date</a></th>
+            <th><a>Number of Days Open</a></th>
             <th ><a>Owner Name</a></th>
             <th style="white-space:nowrap;"><a>Responsible Group</a></th>
             <th style="white-space:nowrap;"><a>Owner Group</a></th>
@@ -20,8 +21,8 @@
             <th style="white-space:nowrap;"><a>Other</a></th>
             <th style="white-space:nowrap;"><a>Break Fix</a></th>
             <th style="white-space:nowrap;"><a>Worklog</a></th>
-            <th style="white-space:nowrap;"><a>Alerts</a></th>
-            %{--<th style="white-space:nowrap;"><a>Related Record</a></th>--}%
+            %{--<th style="white-space:nowrap;"><a>Alerts</a></th>--}%
+            <th style="white-space:nowrap;"><a>Related Record</a></th>
 
         </tr>
         <tr>
@@ -31,6 +32,7 @@
             <th><a>Status</a></th>
             <th><a>Priority</a></th>
             <th><a>Reported Date</a></th>
+            <th><a>Number of Days Open</a></th>
             <th><a>Owner</a></th>
             <th><a>Responsible Group</a></th>
             <th><a>Owner Group</a></th>
@@ -43,7 +45,6 @@
             <th><a>Other</a></th>
             <th><a>Break Fix</a></th>
             <th><a>Worklog</a></th>
-            <th><a>Alerts</a></th>
             <th><a>Related Record</a></th>
 
         </tr>
@@ -59,6 +60,7 @@
                 <td>${problem.status}</td>
                 <td>${problem.priority}</td>
                 <td>${problem.reportedDate}</td>
+                <td>${problem.numberOfDaysOpen}</td>
                 <td>${problem.owner}</td>
                 <td>${problem.responsibleGroup}</td>
                 <td>${problem.ownerGroup}</td>
@@ -71,7 +73,7 @@
                 <td><g:if test="${problem.other != null}">${problem.other.value}</g:if></td>
                 <td><g:if test="${problem.breakFix != null}">${problem.breakFix.value}</g:if></td>
                 <td>${problem.worklogs.isEmpty()? "No" : "Yes"}</td>
-                <td title="Alert Reason">${problem.numberOfDaysOpen > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>
+                %{--<td title="Alert Reason">${problem.numberOfDaysOpen > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>--}%
                 <td><g:if test="${problem.relatedIncident != null}">
                     <g:link id="${problem.relatedIncident.relatedACT}" controller="ODActivities" action="getTicket">${problem.relatedIncident.relatedACT}</g:link></g:if></td>
             </tr>
