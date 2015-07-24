@@ -44,6 +44,8 @@
     <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
     <asset:javascript src="jquery-datatable.js"/>
     <asset:javascript src="jquery-ui.js"/>
+    <asset:javascript src="datatableScroller.js"/>
+    <asset:stylesheet src="/OperationalDashboard/dataTablesScroller.css"/>
     <title>OPD - Activities</title>
 </head>
 
@@ -93,14 +95,15 @@
             "colResize": {
             "tableWidthFixed": false
               },
-            "order": [[0, "desc"]],
+            "order": [[3, "desc"]],
+             "paging": true,
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
            "iDisplayLength" : 10,
-            "paging": true,
-           "jQueryUI": true
-
+            "paging": false,
+           "jQueryUI": true,
+           "deferRender": true
 
         }).columnFilter({
             sPlaceHolder: "head:after",
@@ -110,7 +113,8 @@
                { type: "select"  },
                 { type: "select"  },
                { type: "text"  },
-                { type: "select"},
+                { type: "text"  },
+                { type: "text"},
                 { type: "select"},
                 { type: "select"},
               { type: "text"  },

@@ -7,7 +7,7 @@ class ODProblems {
     String priority
     Date reportedDate
     Date targetFinish
-    String owner
+    ODOwner owner
     String responsibleGroup
     String ownerGroup
     String env
@@ -25,7 +25,7 @@ class ODProblems {
     static constraints = {
         ticketID unique:true
         customer blank: true
-        owner blank: true, nullable: true
+        owner nullable: true
         relatedIncident nullable: true
         responsibleGroup blank: true, nullable: true
         ownerGroup blank: true, nullable: true

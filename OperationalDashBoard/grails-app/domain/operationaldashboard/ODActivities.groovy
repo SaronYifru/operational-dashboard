@@ -9,7 +9,7 @@ class ODActivities {
     String status
     String priority
     Date actualStart
-    String personName
+    ODOwner owner
     String responsibleGroup
     String ownerGroup
     Date statusDate
@@ -30,7 +30,7 @@ class ODActivities {
         actualStart nullable: true
         statusDate nullable: true
         customer nullable: true
-        personName blank: true, nullable:true
+        owner nullable:true
         responsibleGroup blank: true, nullable:true
         ownerGroup blank: true, nullable: true
         requestType blank: true, nullable: true

@@ -11,8 +11,8 @@
                     <h4 class="panel-primary row">
                         <div class="col-sm-12"><g:link controller="OD${panelHeading}">View All ${panelHeading}</g:link></div>
                     </h4>
-                    <g:render template="/ODHome/summary/env" model="[summary: summary.prodSummary, envName:'Production', panelHeading:panelHeading]"/>
-                    <g:render template="/ODHome/summary/env" model="[summary: summary.mtfSummary, envName:'MTF']"/>
-                    <g:render template="/ODHome/summary/env" model="[summary: summary.unknownSummary, envName:'Unknown']"/>
+                    <g:render template="/ODHome/summary/env" model="[summary: summary.prodSummary, envName:summary.prodSummary.env, panelHeading:panelHeading]"/>
+                    <g:render template="/ODHome/summary/env" model="[summary: summary.mtfSummary, envName:summary.mtfSummary.env]"/>
+                    <g:render template="/ODHome/summary/env" model="[summary: summary.unknownSummary, envName:summary.unknownSummary.env]"/>
                 </div>
             </div>

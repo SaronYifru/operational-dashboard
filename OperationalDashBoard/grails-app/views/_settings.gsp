@@ -44,7 +44,7 @@
                 </div>
                  <div class="form-group">
                 <h5>Upload Person to Owner Group List</h5>
-                <g:formRemote name="myForm" url="[controller: 'ODPerson', action: 'uploadFile']" onSuccess="createUserTable(data)">
+                <g:formRemote name="myForm" url="[controller: 'ODOwner', action: 'uploadFile']" onSuccess="createUserTable(data)">
                     <fieldset class="form">
                         <input type="file" name="ownerFile" />
                     </fieldset>

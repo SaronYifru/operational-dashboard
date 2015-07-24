@@ -61,7 +61,8 @@
                 <td>${problem.priority}</td>
                 <td>${problem.reportedDate}</td>
                 <td>${problem.numberOfDaysOpen}</td>
-                <td>${problem.owner}</td>
+                <td><g:if test="${problem.owner != null}"><g:if test="${problem.owner.name != null}">
+                    ${problem.owner.name}</g:if><g:else>${problem.owner.eID}</g:else></g:if></td>
                 <td>${problem.responsibleGroup}</td>
                 <td>${problem.ownerGroup}</td>
                 <td>${problem.targetFinish}</td>
@@ -75,9 +76,11 @@
                 <td>${problem.worklogs.isEmpty()? "No" : "Yes"}</td>
                 %{--<td title="Alert Reason">${problem.numberOfDaysOpen > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>--}%
                 <td><g:if test="${problem.relatedIncident != null}">
-                    <g:link id="${problem.relatedIncident.relatedACT}" controller="ODActivities" action="getTicket">${problem.relatedIncident.relatedACT}</g:link></g:if></td>
+                            <g:link id="${problem.relatedIncident.relatedACT}" controller="ODActivities" action="getTicket">${problem.relatedIncident.relatedACT}</g:link>
+                    </g:if>
+                </td>
             </tr>
-            </tr>
+
         </g:each>
         </tbody>
 

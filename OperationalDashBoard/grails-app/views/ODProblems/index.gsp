@@ -94,7 +94,7 @@
             "colResize": {
                 "tableWidthFixed": false
             },
-            "order": [[0, "desc"]],
+            "order": [[3, "desc"]],
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
@@ -108,8 +108,8 @@
                 { type: "select"  },
                 { type: "select"  },
                 { type: "text"  },
-                {type: "select"},
-                { type: "select"},
+                {type: "text"},
+                { type: "text"},
                 { type: "select"},
                 { type: "select"},
                 { type: "text"  },

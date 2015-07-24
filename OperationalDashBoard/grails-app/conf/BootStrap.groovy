@@ -6,6 +6,8 @@ import operationaldashboard.ODComponent
 import operationaldashboard.ODCustomer
 import operationaldashboard.ODIncidents
 import operationaldashboard.ODOther
+import operationaldashboard.ODOwner
+import operationaldashboard.ODOwner
 import operationaldashboard.ODProblems
 import operationaldashboard.ODRequestType
 import operationaldashboard.ODThreshold
@@ -64,7 +66,7 @@ class BootStrap {
 
     File actCSV
     File requestTypesCSV
-    File customersCSV
+    File ownersCsv
     File prbCSV
     File incCsv
     File components
@@ -72,7 +74,7 @@ class BootStrap {
     List<CSVRecord> recordsPrb
     List<CSVRecord> recordsInc
     List<CSVRecord> recordsRequestType
-    List<CSVRecord> customers
+    List<CSVRecord> recordsOwners
     int columnIndex
     int rowIndex
     int prbIndex
@@ -82,6 +84,9 @@ class BootStrap {
     HashMap<String, Integer> worklogColumnIndexes
     HashMap<String, Integer> specColumnIndexes
     def init = { servletContext ->
+        ownersCsv = new File("data/owners.csv")
+        recordsOwners = CSVParser.parse(ownersCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
+        parseOwners()
         incCsv = new File("data/incidents.csv")
         recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
         parseINC()
@@ -116,23 +121,25 @@ class BootStrap {
     }
     def destroy = {
     }
-//    def parseCustomers() {
-//
-//        if (isRecordsEmpty(customers)) {
-//            return null;
-//        }
-//        long numberOfRecords = customers.size();
-//        for (int index = 1; index<numberOfRecords;index++) {
-//
-//            CSVRecord csvRecord = customers.get(index)
-//            if(isValidRecord(csvRecord)) {
-//                log.info(csvRecord)
-//                def name = csvRecord.get(0).trim().replaceAll("^\\s+", "")
-//                new ODCustomer(name: name).save(failOnError: true)
-//            }
-//        }
-//
-//    }
+    def parseOwners() {
+
+        if (isRecordsEmpty(recordsOwners)) {
+            return null;
+        }
+        long numberOfRecords = recordsOwners.size();
+        HashMap ownerColumns = parseColumns(recordsOwners.get(0))
+        for (int index = 1; index<numberOfRecords;index++) {
+
+            CSVRecord csvRecord = recordsOwners.get(index)
+            if(isValidRecord(csvRecord)) {
+                log.info(csvRecord)
+                def eID = csvRecord.get(ownerColumns.get("Person"))
+                def name = csvRecord.get(ownerColumns.get("Name")).trim().replaceAll("^\\s+", "")
+                new ODOwner(eID: eID, name: name).save(failOnError: true)
+            }
+        }
+
+    }
 //    This function parses an incident report (Particularly extracts the related records for each incident ticket)
     def parseINC() {
         if (isRecordsEmpty(recordsInc)) {
@@ -206,16 +213,25 @@ class BootStrap {
                 String id = csvRecord.get(prbColumnIndexes.get(PRB_TICKET_ID))
                 String summary = csvRecord.get(prbColumnIndexes.get(SUMMARY))
                 String status = csvRecord.get(prbColumnIndexes.get(STATUS))
+
                 Date reportedDate =  Date.parse(FORMAT2, csvRecord.get(prbColumnIndexes.get(REPORTED_DATE)))
                 Date targetFinish
                 int numberOfDaysOpen
                 if  (csvRecord.get(prbColumnIndexes.get(TARGET_FINISH)).equals("")) {
                     targetFinish = null
+                    TimeZone.setDefault(TimeZone.getTimeZone('CST'))
+                    Date currentDate = new Date();
+                    String stringDate = currentDate.format(FORMAT2)
+                    log.info(stringDate)
+                    currentDate = Date.parse(FORMAT2, stringDate)
+
+
+
                     use(groovy.time.TimeCategory) {
-                        def dateFormat = new SimpleDateFormat(FORMAT2)
-                        def duration = Calendar.getInstance(reportedDate.getTimeZone()).time - reportedDate
-                        log.info(csvRecord.get(prbColumnIndexes.get(REPORTED_DATE)))
-                        log.info(Calendar.getInstance(reportedDate.getTimeZone()).time.)
+
+                        def duration = currentDate - reportedDate
+                        log.info(reportedDate)
+                        log.info(currentDate)
                         numberOfDaysOpen = duration.days
 
                     }
@@ -233,7 +249,11 @@ class BootStrap {
 
 
 //                Date statusDate = Date.parse(FORMAT2, csvRecord.get(11))
-                String owner = csvRecord.get(prbColumnIndexes.get(OWNER))
+                String ownerID = csvRecord.get(prbColumnIndexes.get(OWNER))
+                ODOwner owner
+                if (!ownerID.equals("") && !ownerID.equals(null)) {
+                    owner = ODOwner.findOrSaveByEID(ownerID)
+                }
                 String ownerGroup = csvRecord.get(prbColumnIndexes.get(OWNER_GROUP))
                 String responsibleGroup = csvRecord.get(prbColumnIndexes.get(RESPONSIBLE_GROUP))
                 String environment = csvRecord.get(prbColumnIndexes.get(ENVIRONMENT));
@@ -326,7 +346,11 @@ class BootStrap {
                 String priority = csvRecord.get(actColumnIndexes.get(PRIORITY))
                 Date actualStart =  Date.parse(FORMAT2,csvRecord.get(actColumnIndexes.get(ACTUAL_START)), TimeZone.getTimeZone("CDT"))
 //                String actualTime = parseColumn(csvRecord)
-                String owner = csvRecord.get(actColumnIndexes.get(OWNER))
+                String ownerID = csvRecord.get(actColumnIndexes.get(OWNER))
+                ODOwner owner
+                if (!ownerID.equals("") && !ownerID.equals(null)) {
+                    owner = ODOwner.findOrSaveByEID(ownerID)
+                }
                 String ownerGroup = csvRecord.get(actColumnIndexes.get(OWNER_GROUP))
                 String responsibleGroup = csvRecord.get(actColumnIndexes.get(RESPONSIBLE_GROUP))
                 String environment = csvRecord.get(actColumnIndexes.get(ENVIRONMENT))
@@ -350,7 +374,7 @@ class BootStrap {
                 ODBreakFix breakFix = ODBreakFix.findorSaveByValue(getAttributeValue(spec.get(BREAK_FIX)))
 
                 def activity = new ODActivities(ticketID:
-                        id, summary: summary, status: status, priority: priority, actualStart: actualStart, statusDate: statusDate, personName: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
+                        id, summary: summary, status: status, priority: priority, actualStart: actualStart, statusDate: statusDate, owner: owner, ownerGroup: ownerGroup, responsibleGroup: responsibleGroup, env: environment,
                         customer: customer, requestType: requestType, component:component, accessAtr:access,other:other, breakFix:breakFix, numberOfDaysOpen: numberOfDaysOpen)
                 activity.save(failOnError: true)
 

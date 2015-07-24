@@ -15,13 +15,20 @@ class ODActivitiesController {
     def index() {
         def activities = ODActivities.list()
         def requestType = ODRequestType.list()
-
-
         [activities:activities, requestType:requestType, customerName:null]
     }
     def getCustomersActivities() {
         ODCustomer customer = ODCustomer.findById(params.id)
-        def activities = ODActivities.findAllByCustomer(customer)
+        String env = params.env
+        def activities
+        if (env.equals("Unknown")) {
+            activities = ODActivities.findAllByCustomerAndEnvIsNull(customer)
+
+        }
+        else {
+            activities = ODActivities.findAllByCustomerAndEnvLike(customer,params.env)
+        }
+
         render(view: "index", model: [activities:activities, customerName:customer.name])
     }
     def getTicket() {
