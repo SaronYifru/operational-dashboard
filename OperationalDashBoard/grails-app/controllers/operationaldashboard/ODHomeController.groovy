@@ -61,13 +61,11 @@ class ODHomeController {
         def alerts= []
         //These will be uploadable by user
         for (type in requestTypes) {
-            log.info(type.name)
             def threshold = ODThreshold.findByType(type).thresholdValue
             def typeAlertWorklog =className.countByRequestTypeAndWorklogsIsNotNullAndNumberOfDaysOpenGreaterThanEquals(type.id, threshold)
             def typeAlertNoWorklog = className.countByRequestTypeAndWorklogsIsNullAndNumberOfDaysOpenGreaterThanEquals(type.id, threshold)
             if (typeAlertWorklog > 0 || typeAlertNoWorklog > 0) {
-                alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name, Id: type.id])
-                log.info(" tickets by request type: " + typeAlertNoWorklog)
+                alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name, Id: type.id, reportType: className.name])
             }
 
         }

@@ -88,7 +88,7 @@
 
        table = $('#activitiesTable').dataTable({
 
-           "autoWidth": true,
+           "autoWidth": false,
             "dom": 'Rlfrtip',
             "dom": 'C<"clear">RZlfrtip',
            "sPaginationType" : "full_numbers",
@@ -102,8 +102,8 @@
             "scrollCollapse": true,
            "iDisplayLength" : 10,
             "paging": false,
-           "jQueryUI": true,
-           "deferRender": true
+           "deferRender": true,
+           "bAutoWidth" : false,
 
         }).columnFilter({
             sPlaceHolder: "head:after",
@@ -139,6 +139,8 @@
 
 
         });
+        table.fnAdjustColumnSizing();
+
 
         $('#activitiesTable tbody').on('click', 'td.details-control', function () {
             var tr =$(this).closest('tr');
@@ -174,8 +176,8 @@
 <g:render template="/sections/header"/>
 <div class="container-fluid">
     <h1>Activities</h1>
-    <g:if test="${customerName != null}">
-        <h3>${customerName}</h3>
+    <g:if test="${initialFilter != null}">
+        <h3>${initialFilter}</h3>
         <span> <g:link controller="ODActivities">View All Activities</g:link></span>
     </g:if>
     <div class="row">

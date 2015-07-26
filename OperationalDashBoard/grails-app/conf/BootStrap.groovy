@@ -24,11 +24,8 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 class BootStrap {
-    public static String FORMAT1 = "MM-dd-yyyy hh:mm:ss"
-    public static String FORMAT2 = "MM/dd/yyyy"
-    public static String FORMAT3 = "dd MMM yyyy"
-    public static String FORMAT4 = "dd MMM yyyy hh:mm"
-    public static String FORMAT5 = "yyyy-MM-dd hh:mm:ss"
+    public static String DATE_FORMAT1 = "MM/dd/yy"
+    public static String DATE_FORMAT2 = "MM/dd/yyyy"
     static String ACT_TICKET_ID = "Activity"
     static String PRB_TICKET_ID = "Problem"
     static String SUMMARY = "Summary"
@@ -214,30 +211,19 @@ class BootStrap {
                 String summary = csvRecord.get(prbColumnIndexes.get(SUMMARY))
                 String status = csvRecord.get(prbColumnIndexes.get(STATUS))
 
-                Date reportedDate =  Date.parse(FORMAT2, csvRecord.get(prbColumnIndexes.get(REPORTED_DATE)))
+                Date reportedDate =  Date.parse(DATE_FORMAT1, csvRecord.get(prbColumnIndexes.get(REPORTED_DATE)))
                 Date targetFinish
                 int numberOfDaysOpen
                 if  (csvRecord.get(prbColumnIndexes.get(TARGET_FINISH)).equals("")) {
                     targetFinish = null
-                    TimeZone.setDefault(TimeZone.getTimeZone('CST'))
-                    Date currentDate = new Date();
-                    String stringDate = currentDate.format(FORMAT2)
-                    log.info(stringDate)
-                    currentDate = Date.parse(FORMAT2, stringDate)
-
-
-
                     use(groovy.time.TimeCategory) {
-
-                        def duration = currentDate - reportedDate
-                        log.info(reportedDate)
-                        log.info(currentDate)
+                        def duration = new Date() - reportedDate
                         numberOfDaysOpen = duration.days
 
                     }
                 }
                 else {
-                    targetFinish = new Date().parse(FORMAT2, csvRecord.get(prbColumnIndexes.get(TARGET_FINISH)))
+                    targetFinish = new Date().parse(DATE_FORMAT1, csvRecord.get(prbColumnIndexes.get(TARGET_FINISH)))
                     use(groovy.time.TimeCategory) {
                         numberOfDaysOpen = (targetFinish - reportedDate).days
                     }
@@ -248,7 +234,7 @@ class BootStrap {
                 log.info(numberOfDaysOpen)
 
 
-//                Date statusDate = Date.parse(FORMAT2, csvRecord.get(11))
+//                Date statusDate = Date.parse(DATE_FORMAT2, csvRecord.get(11))
                 String ownerID = csvRecord.get(prbColumnIndexes.get(OWNER))
                 ODOwner owner
                 if (!ownerID.equals("") && !ownerID.equals(null)) {
@@ -344,7 +330,6 @@ class BootStrap {
                 String status = csvRecord.get(actColumnIndexes.get(STATUS))
                 log.info(id)
                 String priority = csvRecord.get(actColumnIndexes.get(PRIORITY))
-                Date actualStart =  Date.parse(FORMAT2,csvRecord.get(actColumnIndexes.get(ACTUAL_START)), TimeZone.getTimeZone("CDT"))
 //                String actualTime = parseColumn(csvRecord)
                 String ownerID = csvRecord.get(actColumnIndexes.get(OWNER))
                 ODOwner owner
@@ -354,14 +339,13 @@ class BootStrap {
                 String ownerGroup = csvRecord.get(actColumnIndexes.get(OWNER_GROUP))
                 String responsibleGroup = csvRecord.get(actColumnIndexes.get(RESPONSIBLE_GROUP))
                 String environment = csvRecord.get(actColumnIndexes.get(ENVIRONMENT))
-                Date statusDate = Date.parse(FORMAT2, csvRecord.get(actColumnIndexes.get(STATUS_DATE)))
+                Date statusDate = Date.parse(DATE_FORMAT2, csvRecord.get(actColumnIndexes.get(STATUS_DATE)))
+                Date actualStart =  Date.parse(DATE_FORMAT1,csvRecord.get(actColumnIndexes.get(ACTUAL_START)))
                 int numberOfDaysOpen
-
-                    DateFormat dateFormat =  DateFormat.getDateTimeInstance()
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("CDT"))
-                     numberOfDaysOpen =  new Date() - actualStart
-                    log.info(numberOfDaysOpen)
-//                String relatedRecord = csvRecord.get(21);
+                use(groovy.time.TimeCategory) {
+                    def duration = new Date() - actualStart
+                    numberOfDaysOpen = duration.days
+                }
                 parseRelatedRecord(recordsAct)
                 HashMap<String, String> spec = parseSpec(recordsAct)
                 List<ODWorklog>logs = parseWorklog(recordsAct, ACT_WORKLOGS_MATCHER)
@@ -409,7 +393,7 @@ class BootStrap {
         CSVRecord record = records.get(rowIndex);
         while (isValidRecord(record)) {
 
-            Date date = Date.parse(FORMAT2, record.get(worklogColumnIndexes.get(WORKLOG_DATE)));
+            Date date = Date.parse(DATE_FORMAT2, record.get(worklogColumnIndexes.get(WORKLOG_DATE)));
             String createdBy = record.get(worklogColumnIndexes.get(WORKLOG_CREATED_BY));
             String summary = record.get(worklogColumnIndexes.get(WORKLOG_SUMMARY));
             log.info(summary)

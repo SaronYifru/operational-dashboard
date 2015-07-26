@@ -5,15 +5,15 @@
       <configuration>
         <webroots>
           <root url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.1/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/excel-import-1.0.0/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.4.0/grails-app/views" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.4.2/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.4.2/grails-app/views" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/jquery-ui-1.10.4/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/uploadr-1.0.0/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/uploadr-1.0.0/grails-app/views" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.4.0/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/jprogress-0.2/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/jprogress-0.2/grails-app/views" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/jquery-ui-1.10.4/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.4.2/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.4.2/grails-app/views" relative="/" />
+          <root url="file://$MODULE_DIR$/target/work/plugins/excel-import-1.0.0/web-app" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -94,10 +94,6 @@
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library (OperationalDashBoard-grailsPlugins)">
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/bertramlabs/plugins/asset-pipeline-core/2.1.1/asset-pipeline-core-2.1.1.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/org/javassist/javassist/3.17.1-GA/javassist-3.17.1-GA.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-csv/1.1/commons-csv-1.1.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/org/liquibase/liquibase-core/2.0.5/liquibase-core-2.0.5.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/grails/grails-datastore-web/3.1.4.RELEASE/grails-datastore-web-3.1.4.RELEASE.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/grails/grails-datastore-gorm-plugin-support/3.1.4.RELEASE/grails-datastore-gorm-plugin-support-3.1.4.RELEASE.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/mongodb/mongo-java-driver/2.12.3/mongo-java-driver-2.12.3.jar!/" />
@@ -105,16 +101,20 @@
           <root url="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-commons/1.7.3.RELEASE/spring-data-commons-1.7.3.RELEASE.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-mongodb/1.4.3.RELEASE/spring-data-mongodb-1.4.3.RELEASE.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/grails/grails-datastore-gorm-mongodb/3.1.4.RELEASE/grails-datastore-gorm-mongodb-3.1.4.RELEASE.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/com/bertramlabs/plugins/asset-pipeline-core/2.1.1/asset-pipeline-core-2.1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/javassist/javassist/3.17.1-GA/javassist-3.17.1-GA.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-csv/1.1/commons-csv-1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/activation/activation/1.1/activation-1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/javax/mail/mail/1.5.0-b01/mail-1.5.0-b01.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/liquibase/liquibase-core/2.0.5/liquibase-core-2.0.5.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/com/google/guava/guava/18.0/guava-18.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.26/args4j-2.0.26.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20141023/closure-compiler-externs-v20141023.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20141023/closure-compiler-v20141023.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/mozilla/rhino/1.7R4/rhino-1.7R4.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/javax/activation/activation/1.1/activation-1.1.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/javax/mail/mail/1.4/mail-1.4.jar!/" />
-          <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/grails/grails-datastore-test-support/1.0.2-grails-2.4/grails-datastore-test-support-1.0.2-grails-2.4.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-core/7.0.55/tomcat-embed-core-7.0.55.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jdt/core/compiler/ecj/3.7.2/ecj-3.7.2.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-websocket/7.0.55/tomcat-embed-websocket-7.0.55.jar!/" />

@@ -7,7 +7,7 @@ class ODProblemsController {
         def requestType = ODRequestType.list()
 
 
-        [problems:problems, requestType:requestType, customerName:null]
+        [problems:problems, requestType:requestType, initialFilter:null]
     }
     def getCustomersProblems() {
         ODCustomer customer = ODCustomer.findById(params.id)
@@ -19,11 +19,18 @@ class ODProblemsController {
         else {
             problems = ODProblems.findAllByCustomerAndEnvLike(customer,params.env)
         }
-        render(view: "index", model: [problems:problems, customerName:customer.name])
+        render(view: "index", model: [problems:problems, initialFilter:"Customer: " + customer.name])
     }
     def getTicket() {
         ODProblems problem = ODProblems.findByTicketID(params.id)
         render(view:"index", model: [problems: problem? [problem]: []])
+    }
+    def getTicketsByRequestType() {
+        ODRequestType requestType = ODRequestType.findById(params.id)
+        //Get number of days Threshold for request type
+        ODThreshold threshold = ODThreshold.findByType(requestType)
+        def problems = ODProblems.findAllByRequestTypeAndNumberOfDaysOpenGreaterThanEquals(requestType, threshold.thresholdValue)
+        render (view: "index", model: [problems: problems, initialFilter:"Request Type: " + requestType.name])
     }
     def doUpload() {
         def file = params.prbFile
@@ -32,16 +39,11 @@ class ODProblemsController {
             render(template: '../settings/iframeStatus')
             return
         }
-        progressService.setProgressBarValue("reportUpdateProgress", 33)
         def webrootDir = servletContext.getRealPath("/") //app directory
         File fileDest = new File(webrootDir,"../data/lsps_problems.csv")
-        log.info(fileDest)
         file.transferTo(fileDest)
         flash.message = 'File Successfully Uploaded!'
         render(template: "../settings/iframeStatus")
-
-
-
     }
 
 }

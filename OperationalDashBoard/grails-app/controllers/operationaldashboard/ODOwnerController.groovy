@@ -3,7 +3,6 @@ package operationaldashboard
 class ODOwnerController {
 
     def index() {}
-
     def setOwnerName() {
         ODOwner owner = ODOwner.findById(params.name)
         owner.setName(params.value)

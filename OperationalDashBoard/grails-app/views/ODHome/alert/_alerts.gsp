@@ -1,9 +1,9 @@
 <%@ page import="grails.converters.JSON" %>
 <h3>Activity Tickets Open for days > Threshold</h3>
-<div id='actAlerts'>
+<div id='ODActivities'>
 </div>
 <h3>Problem Tickets Open for days > Threshold</h3>
-<div id='prbAlerts'>
+<div id='ODProblems'>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -23,7 +23,7 @@
                     hGDim.h = 300 - hGDim.t - hGDim.b;
 
             //create svg for histogram.
-            var hGsvg = d3.select(id).append("svg")
+            var hGsvg = d3.select("#" + id).append("svg")
                     .attr("width", hGDim.w + hGDim.l + hGDim.r + 150)
                     .attr("height", hGDim.h + hGDim.t + hGDim.b).append("g")
                     .attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
@@ -49,11 +49,12 @@
             bars.append("rect")
                     .attr("x", function(d) { return x(d[0]); })
                     .attr("y", function(d) { return y(d[1]); })
+                    .on("click", onClick)
                     .attr("width", x.rangeBand())
                     .attr("height", function(d) { return hGDim.h - y(d[1]); })
                     .attr("fill",function(d,i){return color(i);})
                     .on("mouseover",mouseover)// mouseover is defined below.
-                    .on("mouseout",mouseout).on("click", click);// mouseout is defined below.
+                    .on("mouseout",mouseout);// mouseout is defined below.
 
             //Create the frequency labels above the rectangles.
             bars.append("text").text(function(d){ return d3.format(",")(d[1])})
@@ -62,7 +63,7 @@
                     .attr("text-anchor", "middle");
 
             var tip
-            function click(d) {
+            function onClick(d) {
                 var st = fData.filter(function (s) {
                             return s.State == d[0];
                         })[0],
@@ -70,12 +71,11 @@
                             return {State: s, freq: st.freq[s], id: st.Id};
                         });
                 var requestType= st.Id
-                var reportType = id
-                %{--<g:remoteFunction controller="ODActivities" action="getACTByRequestType" id="st.Id" />--}%
-                $.ajax({
-                    type: 'POST',
-                    url: "${createLink(action:'getACTByRequestType', controller:'ODActivities')}/" + requestType
-                });
+                var reportType = st.reportType
+                console.log(reportType)
+                mouseout(d)
+                window.location.href = "${createLink()}/../../" + id + "/getTicketsByRequestType/" + requestType
+
 
             }
             function mouseover(d){  // utility function to be called on mouseover.
@@ -139,7 +139,7 @@
             pieDim.r = Math.min(pieDim.w, pieDim.h) / 2;
 
             // create svg for pie chart.
-            var piesvg = d3.select(id).append("svg")
+            var piesvg = d3.select("#" + id).append("svg")
                     .attr("width", pieDim.w).attr("height", pieDim.h).append("g")
                     .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
 
@@ -196,7 +196,7 @@
             var leg = {};
 
             // create table for legend.
-            var legend = d3.select(id).append("table").attr('class','legend');
+            var legend = d3.select("#" + id).append("table").attr('class','legend');
 
             // create one row per segment.
             var tr = legend.append("tbody").selectAll("tr").data(lD).enter().append("tr");
@@ -238,7 +238,7 @@
         }
         function barGraphLegend(requestToColor, color, svg) {
 
-            d3.select(id).append("div").attr('class', 'barLegend2').selectAll('span')
+            d3.select("#" + id).append("div").attr('class', 'barLegend2').selectAll('span')
                     .data(requestToColor)
                     .enter().append('span')
                     .attr('data-id', function (id) { return id[0]; })
@@ -269,7 +269,7 @@
         var sF = fData.map(function(d){return [d.State,d.total];});
         var color = d3.scale.category20();
         var requestToColor = fData.map(function (d, i) { return [d.State, color(i)]})
-        var hG = histoGram(sF, color), // create the histogram.
+        var hG = histoGram(sF, color, id), // create the histogram.
 
                 pC = pieChart(tF), // create the pie-chart.
                 leg= pieChartLegend(tF);  // create the legend.
@@ -278,16 +278,10 @@
 </script>
 
 <g:javascript encodeAs="none">
-
-
-
-   var actAlertsData= ${raw(actAlertsByRequest)}
-    console.log(actAlertsData)
-
-
-    dashboard('#actAlerts',actAlertsData);
-     var prbAlertsData= ${raw(prbAlertsByRequest)}
-    dashboard('#prbAlerts',prbAlertsData);
+    var actAlertsData= ${raw(actAlertsByRequest)}
+    dashboard("ODActivities",actAlertsData);
+    var prbAlertsData= ${raw(prbAlertsByRequest)}
+    dashboard("ODProblems",prbAlertsData);
 </g:javascript>
 
 

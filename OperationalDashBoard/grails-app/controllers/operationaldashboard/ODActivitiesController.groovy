@@ -15,7 +15,7 @@ class ODActivitiesController {
     def index() {
         def activities = ODActivities.list()
         def requestType = ODRequestType.list()
-        [activities:activities, requestType:requestType, customerName:null]
+        [activities:activities, requestType:requestType, initialFilter:null]
     }
     def getCustomersActivities() {
         ODCustomer customer = ODCustomer.findById(params.id)
@@ -29,18 +29,18 @@ class ODActivitiesController {
             activities = ODActivities.findAllByCustomerAndEnvLike(customer,params.env)
         }
 
-        render(view: "index", model: [activities:activities, customerName:customer.name])
+        render(view: "index", model: [activities:activities, initialFilter:"Customer: " + customer.name])
     }
     def getTicket() {
         ODActivities activity = ODActivities.findByTicketID(params.id)
         render(view: "index", model: [activities: activity != null ? [activity] : []])
 
     }
-    def getACTByRequestType() {
-        log.info(params.id)
+    def getTicketsByRequestType() {
         ODRequestType requestType = ODRequestType.findById(params.id)
-        def activities = ODActivities.findAllByRequestType(requestType)
-        render (view: "index", model: [activities: activities, customerName:null])
+        ODThreshold threshold = ODThreshold.findByType(requestType)
+        def activities = ODActivities.findAllByRequestTypeAndNumberOfDaysOpenGreaterThanEquals(requestType, threshold.thresholdValue)
+        render (view: "index", model: [activities: activities, initialFilter:"Request Type: " + requestType.name])
     }
     def doUpload() {
         def file = params.actFile
@@ -49,12 +49,8 @@ class ODActivitiesController {
             render(template: '../settings/iframeStatus')
             return
         }
-        //validate file or do something crazy hehehe
-
-//now transfer file
         def webrootDir = servletContext.getRealPath("/") //app directory
         File fileDest = new File(webrootDir,"../data/lsps_activities.csv")
-        log.info(fileDest)
         file.transferTo(fileDest)
         flash.message = 'File Successfully Uploaded!'
         render(template: "../settings/iframeStatus")

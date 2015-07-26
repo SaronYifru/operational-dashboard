@@ -86,9 +86,7 @@
     }
     $(document).ready(function () {
         table = $('#problemsTable').dataTable({
-
-                "jQueryUI": true,
-            "autoWidth": true,
+            "autoWidth": false,
             "dom": 'Rlfrtip',
             "dom": 'C<"clear">RZlfrtip',
             "colResize": {
@@ -98,7 +96,9 @@
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
-            "paging": true
+            "paging": true,
+            "bAutoWidth" : false,
+
 
         }).columnFilter({
             sPlaceHolder: "head:after",
@@ -134,7 +134,7 @@
 
 
         });
-
+        table.fnAdjustColumnSizing();
         $('#problemsTable tbody').on('click', 'td.details-control', function () {
             var tr =$(this).closest('tr');
             var row = table.api().row( tr );
@@ -168,8 +168,8 @@
 <g:render template="/sections/header"/>
 <div class="container-fluid">
     <h1>Problems</h1>
-    <g:if test="${customerName != null}">
-        <h3>${customerName}</h3>
+    <g:if test="${initialFilter != null}">
+        <h3>${initialFilter}</h3>
         <span> <g:link controller="ODProblems">All Problems</g:link></span>
     </g:if>
     <g:render template="problemsDetails" model="[problems: problems]"/>

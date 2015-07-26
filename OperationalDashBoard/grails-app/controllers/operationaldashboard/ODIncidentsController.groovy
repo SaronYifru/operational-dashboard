@@ -15,7 +15,6 @@ class ODIncidentsController {
 //now transfer file
         def webrootDir = servletContext.getRealPath("/") //app directory
         File fileDest = new File(webrootDir,"../data/lsps_incidents.csv")
-        log.info(fileDest)
         file.transferTo(fileDest)
         flash.message = 'File Successfully Uploaded!'
         render(template: "../settings/iframeStatus")
