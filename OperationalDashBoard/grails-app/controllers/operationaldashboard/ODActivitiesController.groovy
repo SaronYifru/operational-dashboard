@@ -50,7 +50,7 @@ class ODActivitiesController {
             return
         }
         def webrootDir = servletContext.getRealPath("/") //app directory
-        File fileDest = new File(webrootDir,"../data/lsps_activities.csv")
+        File fileDest = grailsApplication.mainContext.getResource("data/lsps_activities.csv").file
         file.transferTo(fileDest)
         flash.message = 'File Successfully Uploaded!'
         render(template: "../settings/iframeStatus")

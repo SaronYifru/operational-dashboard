@@ -15,7 +15,7 @@ class ODHomeController {
 
     }
     def updateData() {
-        reportDataUpdaterService.updateReports()
+        reportDataUpdaterService.deleteCurrentAndupdateReports()
        redirect(action: 'index')
     }
     def getJson() {

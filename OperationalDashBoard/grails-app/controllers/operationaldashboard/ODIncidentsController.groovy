@@ -10,11 +10,7 @@ class ODIncidentsController {
             render(template: '../settings/iframeStatus')
             return
         }
-        //validate file or do something crazy hehehe
-
-//now transfer file
-        def webrootDir = servletContext.getRealPath("/") //app directory
-        File fileDest = new File(webrootDir,"../data/lsps_incidents.csv")
+        File fileDest = grailsApplication.mainContext.getResource("data/lsps_incidents.csv").file
         file.transferTo(fileDest)
         flash.message = 'File Successfully Uploaded!'
         render(template: "../settings/iframeStatus")

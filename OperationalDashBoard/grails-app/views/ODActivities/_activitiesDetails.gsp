@@ -78,7 +78,7 @@
             %{--<td title="Alert Reason">${(new Date() - activity.statusDate) > 60? "Alert" : "" } <span class="glyphicon glyphicon-exclamation-sign"></span></td>--}%
 
             <td><g:if test="${activity.relatedIncident != null}">
-                    <g:link id="${activity.relatedIncident.relatedPRB}" controller="ODActivities" action="getTicket">${activity.relatedIncident.relatedPRB}</g:link>
+                    <g:link id="${activity.relatedIncident.relatedPRB}" controller="ODProblems" action="getTicket">${activity.relatedIncident.relatedPRB}</g:link>
                 </g:if>
             </td>
             </tr>

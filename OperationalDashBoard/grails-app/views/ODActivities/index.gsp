@@ -25,27 +25,27 @@
             src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.js"></script>
 
     <script type="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/"></script>
-    <asset:stylesheet src="/OperationalDashboard/homeStyle2.css"/>
-    <asset:stylesheet src="/OperationalDashboard/homeStyle.css"/>
-    <asset:stylesheet src="/OperationalDashboard/dataTable.css"/>
-    <asset:stylesheet src="/OperationalDashboard/columnReorder.css"/>
+    <asset:stylesheet src="OperationalDashboard/homeStyle2.css"/>
+    <asset:stylesheet src="OperationalDashboard/homeStyle.css"/>
+    <asset:stylesheet src="OperationalDashboard/dataTable.css"/>
+    <asset:stylesheet src="OperationalDashboard/columnReorder.css"/>
     %{--<asset:javascript src="expandableTable.js"/>--}%
-    <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
-    <asset:stylesheet src="/OperationalDashboard/jquery-ui.css"/>
+    <asset:stylesheet src="OperationalDashboard/expandableTable.css"/>
+    <asset:stylesheet src="OperationalDashboard/jquery-ui.css"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="dataTablesResponsive.js"/>
     <asset:javascript src="columnResize.js"/>
     <asset:javascript src="columnVis.js"/>
     <asset:javascript src="datatables-bootstrap.js"/>
-    <asset:stylesheet src="/OperationalDashboard/columnVis.css"/>
-    <asset:stylesheet src="/OperationalDashboard/dataTablesResponsive.css"/>
-    <asset:stylesheet src="/OperationalDashboard/datatables-jquery-ui.css"/>
-    <asset:stylesheet src="/OperationalDashboard/expandableTable.css"/>
+    <asset:stylesheet src="OperationalDashboard/columnVis.css"/>
+    <asset:stylesheet src="OperationalDashboard/dataTablesResponsive.css"/>
+    <asset:stylesheet src="OperationalDashboard/datatables-jquery-ui.css"/>
+    <asset:stylesheet src="OperationalDashboard/expandableTable.css"/>
     <asset:javascript src="jquery-datatable.js"/>
     <asset:javascript src="jquery-ui.js"/>
     <asset:javascript src="datatableScroller.js"/>
-    <asset:stylesheet src="/OperationalDashboard/dataTablesScroller.css"/>
+    <asset:stylesheet src="OperationalDashboard/dataTablesScroller.css"/>
     <title>OPD - Activities</title>
 </head>
 

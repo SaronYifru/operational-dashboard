@@ -54,7 +54,7 @@ class ReportDataUpdaterService {
     List<CSVRecord> recordsAct
     List<CSVRecord> recordsPrb
     List<CSVRecord> recordsInc
-    List<CSVRecord> recordsRequestType
+    List<CSVRecord> recordsOwners
     List<CSVRecord> customers
     int columnIndex
     int rowIndex
@@ -65,15 +65,20 @@ class ReportDataUpdaterService {
     File actCSV
     File prbCSV
     File incCsv
-    def progressService
+    File ownersCsv
+    def grailsApplication
     def serviceMethod() {
 
     }
-    def updateReports() {
-        progressService.setProgressBarValue("reportUpdateProgress", 1)
+    def deleteCurrentAndupdateReports() {
         ODActivities.collection.remove(new BasicDBObject());
         ODIncidents.collection.remove(new BasicDBObject())
         ODProblems.collection.remove(new BasicDBObject());
+        updateReports()
+
+
+    }
+    def updateReports (){
         incCsv = new File("data/lsps_incidents.csv")
         recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
         parseINC()
@@ -87,7 +92,14 @@ class ReportDataUpdaterService {
                 CSVFormat.DEFAULT).getRecords()
         prbColumnIndexes = parseColumns(recordsPrb.get(4))
         parsePRB()
+    }
 
+    def initializeReports() {
+        ownersCsv = grailsApplication.mainContext.getResource("data/owners.csv").file
+        recordsOwners = CSVParser.parse(ownersCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
+        parseOwners()
+        updateReports()
+        initializeThresholds()
     }
     //This function parses an incident report (Particularly extracts the related records for each incident ticket)
     def parseINC() {
