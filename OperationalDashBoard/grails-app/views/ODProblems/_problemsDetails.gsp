@@ -1,3 +1,4 @@
+<%@ page import="java.text.DateFormat" %>
 <div class="table-responsive" style="overflow-x: auto">
     <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="problemsTable">
         <thead>
@@ -59,13 +60,13 @@
                 <td >${problem.summary}</td>
                 <td>${problem.status}</td>
                 <td>${problem.priority}</td>
-                <td>${problem.reportedDate}</td>
+                <td>${DateFormat.instance.format(problem.reportedDate)}</td>
                 <td>${problem.numberOfDaysOpen}</td>
                 <td><g:if test="${problem.owner != null}"><g:if test="${problem.owner.name != null}">
                     ${problem.owner.name}</g:if><g:else>${problem.owner.eID}</g:else></g:if></td>
                 <td>${problem.responsibleGroup}</td>
                 <td>${problem.ownerGroup}</td>
-                <td>${problem.targetFinish}</td>
+                <td>${DateFormat.instance.format(problem.targetFinish)}</td>
                 <td>${problem.env}</td>
                 <td>${problem.customer.name}</td>
                 <td>${problem.requestType.name}</td>

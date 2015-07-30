@@ -14,4 +14,12 @@ class ODRequestTypeController {
         render(status: 200, text: 'HTTP status 200 OK')
 
     }
+    def setThreshold() {
+        log.info(params)
+        ODRequestType type = ODRequestType.findById(params.name)
+        type.setThresholdValue(Integer.valueOf(params.value))
+        type.save()
+        render(status: 200, text: 'HTTP status 200 OK')
+
+    }
 }

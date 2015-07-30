@@ -12,9 +12,10 @@
                     <td class="form-group col-sm-1">
                         <label><input type="checkbox" name="focusFlag">Focus</label>
                     </td>
-                    <td class="form-group col-sm-9">
+                    <td class="form-group col-sm-7">
                         <input class="form-control" name="customerName" placeholder="Enter New Customer">
                     </td>
+                    <td class="col-sm-2"></td>
                     <td class="form-group col-sm-1">
                         <button type="submit" class="btn btn-success">Add</button>
                     </td>
@@ -24,6 +25,8 @@
         <tr>
             <th>Focus Flag</th>
             <th>Customer</th>
+            <th>Attribute</th>
+            <th>Value</th>
         </tr>
         </thead>
         <tbody>

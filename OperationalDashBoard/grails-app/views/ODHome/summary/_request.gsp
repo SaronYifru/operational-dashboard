@@ -18,7 +18,7 @@
 
     </div>
     <div class="col-xs-6 col-sm-4 placeholder">
-        <h4 style="text-align: center">Threshold (${requestSummary.threshold} Tickets)</h4>
+        <h4 style="text-align: center"> Above Threshold</h4>
         <ul class="list-group">
             <g:each in="${requestSummary.customersAboveThreshold}" var="customer">
                 <li class="list-group-item"><span class="badge">${customer.tickets}</span><g:link controller="OD${panelHeading}" action="getCustomers${panelHeading}" id="${customer.id}" params="[env: env]"> ${customer.name}</g:link></li>

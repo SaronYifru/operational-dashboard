@@ -1,5 +1,5 @@
 <div class="tab-pane" id="thresholdSettings">
-    <h3>Thresholds</h3>
+    <h3>Thresholds By Request Type</h3>
     <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="thresholdsTable">
         <thead>
         <tr>
@@ -12,24 +12,19 @@
         </thead>
         <tbody>
 
-        <g:each in="${thresholds}" var="threshold">
+        <g:each in="${requestTypes}" var="type">
             <tr>
-
-                <g:if test="${threshold.type == null}">
-                    <td></td>
-                    <td>All Request Types</td>
-                </g:if>
-                <g:else><td><g:checkBox name="requestTypeFocusFlag" value="${threshold.type?.focusFlag}"
-                                        checked="${threshold.type?.focusFlag}"
-                                        onclick="${remoteFunction(controller: 'ODRequestType', action: 'setFocusFlag', id: "${threshold.type.id}",
+                <td><g:checkBox name="requestTypeFocusFlag" value="${type.focusFlag}"
+                                        checked="${type?.focusFlag}"
+                                        onclick="${remoteFunction(controller: 'ODRequestType', action: 'setFocusFlag', id: "${type.id}",
                                                 params: '\'requestTypeFocusFlag=\' + this.checked')}"/></td>
-                    <td>${threshold.type.name}</td></g:else>
+                    <td>${type.name}</td>
 
-                <td>${threshold.attribute}</td>
+                <td>${type.threshold.attribute}</td>
                 <td>
-                    <a class="thresholdValue" data-pk="" id="${threshold.id}"
+                    <a class="thresholdValue" data-pk="" id="${type.id}"
                        class="editable editable-click editable-empty" data-type="text" data-placement="right"
-                       style="display: inline;" data-url="../ODThreshold/setThreshold">${threshold.thresholdValue}</a>
+                       style="display: inline;" data-url="../ODRequestType/setThreshold">${type.thresholdValue}</a>
                 </td>
 
             </tr>

@@ -25,27 +25,27 @@
             src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.js"></script>
 
     <script type="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/"></script>
-    <asset:stylesheet src="OperationalDashboard/homeStyle2.css"/>
-    <asset:stylesheet src="OperationalDashboard/homeStyle.css"/>
-    <asset:stylesheet src="OperationalDashboard/dataTable.css"/>
-    <asset:stylesheet src="OperationalDashboard/columnReorder.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle2.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle.css"/>
+    <asset:stylesheet src="operationaldashboard/dataTable.css"/>
+    <asset:stylesheet src="operationaldashboard/columnReorder.css"/>
     %{--<asset:javascript src="expandableTable.js"/>--}%
-    <asset:stylesheet src="OperationalDashboard/expandableTable.css"/>
-    <asset:stylesheet src="OperationalDashboard/jquery-ui.css"/>
+    <asset:stylesheet src="operationaldashboard/expandableTable.css"/>
+    <asset:stylesheet src="operationaldashboard/jquery-ui.css"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="dataTablesResponsive.js"/>
     <asset:javascript src="columnResize.js"/>
     <asset:javascript src="columnVis.js"/>
     <asset:javascript src="datatables-bootstrap.js"/>
-    <asset:stylesheet src="OperationalDashboard/columnVis.css"/>
-    <asset:stylesheet src="OperationalDashboard/dataTablesResponsive.css"/>
-    <asset:stylesheet src="OperationalDashboard/datatables-jquery-ui.css"/>
-    <asset:stylesheet src="OperationalDashboard/expandableTable.css"/>
+    <asset:stylesheet src="operationaldashboard/columnVis.css"/>
+    <asset:stylesheet src="operationaldashboard/dataTablesResponsive.css"/>
+    <asset:stylesheet src="operationaldashboard/datatables-jquery-ui.css"/>
+    <asset:stylesheet src="operationaldashboard/expandableTable.css"/>
     <asset:javascript src="jquery-datatable.js"/>
     <asset:javascript src="jquery-ui.js"/>
     <asset:javascript src="datatableScroller.js"/>
-    <asset:stylesheet src="OperationalDashboard/dataTablesScroller.css"/>
+    <asset:stylesheet src="operationaldashboard/dataTablesScroller.css"/>
     <title>OPD - Activities</title>
 </head>
 
@@ -55,7 +55,7 @@
     // `d` is the original data object for the row
 
     var t =  '<div class="slider">'+
-            '<table class="table table-striped " cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '<table class="table table-striped " width="100" cellpadding="0" cellspacing="0" border="0" style="padding-left:0px; width:1000px;">'+
         '<thead>' +
         '<tr>' +
              '<th>Date</th>' +
@@ -67,9 +67,8 @@
            for (var i = 0; i < d.length; i++) {
 
                t = t + '<tr>'+
-                     '<td>' + d[i].createdDate + '</td>'+
+                     '<td>' + new Date(d[i].createdDate).toLocaleString() + '</td>'+
                      '<td>' + d[i].createdBy + '</td>'+
-
                      '<td>' + d[i].summary +'</td>'+
                  '</tr>'
             }

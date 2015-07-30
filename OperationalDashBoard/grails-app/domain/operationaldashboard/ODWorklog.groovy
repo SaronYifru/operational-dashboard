@@ -7,5 +7,6 @@ class ODWorklog {
     static belongsTo = ODActivities
     static constraints = {
         summary blank:false, nullable: true
+        createdBy nullable: true, blank: true
     }
 }

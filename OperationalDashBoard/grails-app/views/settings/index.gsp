@@ -57,7 +57,7 @@
         </ul>
         <div class="tab-content col-sm-8 col-sm-offset-1">
              <g:render template="/settings/customers" model="[customers: customers]"/>
-             <g:render template="/settings/requestTypeThresholds" model="[thresholds:thresholds]"/>
+             <g:render template="/settings/requestTypeThresholds" model="[requestTypes:requestTypes]"/>
              <g:render template="/settings/owners" model="[owners:owners]"/>
             <g:render template="/settings/reportUploads"/>
         </div>

@@ -61,9 +61,9 @@ class ODHomeController {
         def alerts= []
         //These will be uploadable by user
         for (type in requestTypes) {
-            def threshold = ODThreshold.findByType(type).thresholdValue
-            def typeAlertWorklog =className.countByRequestTypeAndWorklogsIsNotNullAndNumberOfDaysOpenGreaterThanEquals(type.id, threshold)
-            def typeAlertNoWorklog = className.countByRequestTypeAndWorklogsIsNullAndNumberOfDaysOpenGreaterThanEquals(type.id, threshold)
+            def thresholdValue = type.thresholdValue
+            def typeAlertWorklog =className.countByRequestTypeAndWorklogsIsNotNullAndNumberOfDaysOpenGreaterThanEquals(type.id, thresholdValue)
+            def typeAlertNoWorklog = className.countByRequestTypeAndWorklogsIsNullAndNumberOfDaysOpenGreaterThanEquals(type.id, thresholdValue)
             if (typeAlertWorklog > 0 || typeAlertNoWorklog > 0) {
                 alerts.add([freq: [worklog: typeAlertWorklog, noWorklog: typeAlertNoWorklog], State: type.name, Id: type.id, reportType: className.name])
             }
@@ -79,10 +79,9 @@ class ODHomeController {
         def customerToTickets = new HashMap<String, Integer>()
         def highestNumber = 0
         def highestCustomer = customers.get(0)
-        def threshold = ODThreshold.findByType(null).thresholdValue
         List customersAboveThreshold = []
         for (customer in customers) {
-
+            def thresholdValue = customer.thresholdValue
             int numberOfTickets
             if (relatedRecord) {
                 numberOfTickets = className.countByCustomerAndEnvAndRelatedIncidentIsNotNull(customer, environment)
@@ -95,13 +94,13 @@ class ODHomeController {
                 highestNumber = numberOfTickets
                 highestCustomer = customer
             }
-           if (numberOfTickets >= threshold) {
+           if (numberOfTickets >= thresholdValue) {
                 customersAboveThreshold.add([id: customer.id, name:customer.name,tickets: numberOfTickets] )
             }
 
             customerToTickets.put(customer.name, numberOfTickets)
 
         }
-        return [customers:customers, customerToTickets:customerToTickets, highestTickets:highestNumber, highestCustomer:highestCustomer, customersAboveThreshold:customersAboveThreshold, threshold:threshold]
+        return [customers:customers, customerToTickets:customerToTickets, highestTickets:highestNumber, highestCustomer:highestCustomer, customersAboveThreshold:customersAboveThreshold]
     }
 }

@@ -1,3 +1,4 @@
+<%@ page import="java.text.DateFormat" %>
 
 <div class="col-sm-12"  style="overflow-x: auto">
 <table class="table table-striped " cellspacing="0" cellpadding="0" width="100%" id="activitiesTable">
@@ -60,13 +61,13 @@
             <td >${activity.summary}</td>
             <td>${activity.status}</td>
             <td>${activity.priority}</td>
-            <td>${activity.actualStart}</td>
+            <td>${DateFormat.instance.format(activity.actualStart)}</td>
             <td>${activity.numberOfDaysOpen}</td>
             <td><g:if test="${activity.owner != null}"><g:if test="${activity.owner.name != null}">
                 ${activity.owner.name}</g:if><g:else>${activity.owner.eID}</g:else></g:if></td>
             <td>${activity.responsibleGroup}</td>
             <td>${activity.ownerGroup}</td>
-            <td>${activity.statusDate}</td>
+            <td>${DateFormat.instance.format(activity.statusDate)}</td>
             <td>${activity.env}</td>
             <td>${activity.customer.name}</td>
             <td>${activity.requestType.name}</td>

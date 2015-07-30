@@ -83,9 +83,7 @@ class BootStrap {
     def grailsApplication
     def reportDataUpdaterService
     def init = { servletContext ->
-        reportDataUpdaterService.initializeReports()
-//        ownersCsv = new File("C://data/owners.csv")
-
+          reportDataUpdaterService.initializeReports()
 //        runAsync {
 //            incCsv = new File("data/incidents.csv")
 //            recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
@@ -105,4 +103,5 @@ class BootStrap {
     }
     def destroy = {
     }
+
 }

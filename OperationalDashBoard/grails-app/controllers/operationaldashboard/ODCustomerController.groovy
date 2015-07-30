@@ -22,4 +22,12 @@ class ODCustomerController {
         ODCustomer customer = new ODCustomer(name:params.customerName, focusFlag: params.focusFlag.equals("on")?true:false).save()
         render template: "customerTableRows", model: [customers:[customer]]
     }
+    def setThreshold() {
+        log.info(params)
+        ODCustomer customer = ODCustomer.findById(params.name)
+        customer.setThresholdValue(Integer.valueOf(params.value))
+        customer.save()
+        render(status: 200, text: 'HTTP status 200 OK')
+
+    }
 }

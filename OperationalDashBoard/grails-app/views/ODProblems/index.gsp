@@ -55,7 +55,7 @@
         // `d` is the original data object for the row
 
         var t = '<div class="slider">'+
-                '<table class="table table-striped">'+
+                '<table class="table table-striped" style="width:1000px;">'+
                 '<thead>' +
                 '<tr>' +
                 '<th>Date</th>' +
@@ -67,9 +67,8 @@
         for (var i = 0; i < d.length; i++) {
 
             t = t + '<tr>'+
-                    '<td>' + d[i].createdDate + '</td>'+
+                    '<td>' + new Date(d[i].createdDate).toLocaleString() + '</td>'+
                     '<td>' + d[i].createdBy + '</td>'+
-
                     '<td>' + d[i].summary +'</td>'+
                     '</tr>'
         }
@@ -96,7 +95,7 @@
             "scrollX": true,
             "scrollY": $(window).height()*58/100,
             "scrollCollapse": true,
-            "paging": true,
+            "paging": false,
             "bAutoWidth" : false,
 
 
