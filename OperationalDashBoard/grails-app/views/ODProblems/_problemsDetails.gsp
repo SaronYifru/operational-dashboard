@@ -55,7 +55,7 @@
 
         <g:each in="${problems}"  var="problem">
             <tr>
-                <td class="details-control" onClick="showWorklog(${problem.worklogs.toList() as grails.converters.JSON});"></td>
+                <td class="details-control" onClick="showWorklog(${problem.worklogs.toList() as grails.converters.JSON}, '${problem.ticketID}');"></td>
                 <td data-toggle="modal" data-target="#myModal">${problem.ticketID}</td>
                 <td >${problem.summary}</td>
                 <td>${problem.status}</td>
@@ -66,7 +66,8 @@
                     ${problem.owner.name}</g:if><g:else>${problem.owner.eID}</g:else></g:if></td>
                 <td>${problem.responsibleGroup}</td>
                 <td>${problem.ownerGroup}</td>
-                <td>${DateFormat.instance.format(problem.targetFinish)}</td>
+                <td>g><g:if test="${problem.targetFinish != null}">
+                    ${DateFormat.instance.format(problem.targetFinish)}</g:if></td>
                 <td>${problem.env}</td>
                 <td>${problem.customer.name}</td>
                 <td>${problem.requestType.name}</td>

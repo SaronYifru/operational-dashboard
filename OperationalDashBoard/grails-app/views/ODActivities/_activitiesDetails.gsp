@@ -11,7 +11,7 @@
 <th><a>Priority</a></th>
 <th ><a>Actual Start</a></th>
     <th><a>Number Of Days Open</a></th>
-<th ><a>Person name</a></th>
+<th ><a>Owner</a></th>
 <th style="white-space:nowrap;"><a>Responsible Group</a></th>
 <th style="white-space:nowrap;"><a>Owner Group</a></th>
 <th style="white-space:nowrap;"><a>Status Date</a></th>
@@ -35,7 +35,7 @@
 <th><a>Priority</a></th>
 <th><a>Actual Start</a></th>
     <th><a>Number of Days Open</a></th>
-<th><a>Person name</a></th>
+<th><a>Owner</a></th>
 <th><a>Responsible Group</a></th>
 <th><a>Owner Group</a></th>
 <th><a>Status Date</a></th>
@@ -56,7 +56,7 @@
 
             <g:each in="${activities}"  var="activity">
         <tr>
-            <td class="details-control" onClick="showWorklog(${activity.worklogs.toList() as grails.converters.JSON});"></td>
+            <td class="details-control" onClick="showWorklog(${activity.worklogs.toList() as grails.converters.JSON}, '${activity.ticketID}');"></td>
             <td>${activity.ticketID}</td>
             <td >${activity.summary}</td>
             <td>${activity.status}</td>

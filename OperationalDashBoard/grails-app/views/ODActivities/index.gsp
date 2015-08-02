@@ -51,7 +51,7 @@
 
 <body>
 <script>
-    function format ( d ) {
+    function format ( d, ticket ) {
     // `d` is the original data object for the row
 
     var t =  '<div class="slider">'+
@@ -72,16 +72,25 @@
                      '<td>' + d[i].summary +'</td>'+
                  '</tr>'
             }
-           t = t.concat('</tbody>' +
+           var url = "https://gsm.mastercard.com/maximo/ui/maximo.jsp?event=loadapp&value=activity&additionalevent=useqbe&additionaleventvalue=wonum=" + ticket
+            var additionalInfo = '<a href=' + url + '>'
+                + 'View Ticket In GSM' + '</a>'
+        var tFoot = '<tfoot>' + '<tr>' + '<td>' + additionalInfo + '</td>' + '</tr>' + '</tfoot>'
+        t = t.concat('</tbody>' + tFoot +
                 '</table>' + '</div>') ;
+
+
+
 
     return t
 }
 
     var table
     var worklogsData
-    function showWorklog(worklogs) {
+    var ticket
+    function showWorklog(worklogs, ticketId) {
         worklogsData = worklogs
+        ticket = ticketId
     }
     $(document).ready(function () {
 
@@ -154,7 +163,7 @@
             }
             else {
 
-                row.child( format(worklogsData), 'no-padding' ).show();
+                row.child( format(worklogsData, ticket), 'no-padding' ).show();
                 tr.addClass('shown');
 
                 $('div.slider', row.child()).slideDown();

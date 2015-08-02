@@ -32,6 +32,16 @@ class ODProblemsController {
         def problems = ODProblems.findAllByRequestTypeAndNumberOfDaysOpenGreaterThanEquals(requestType, threshold.thresholdValue)
         render (view: "index", model: [problems: problems, initialFilter:"Request Type: " + requestType.name])
     }
+    def getTicketsByWorklog() {
+        def problems
+        if (params.id.equals("noWorklog")) {
+            problems = ODProblems.findAllByWorklogsIsNull()
+        }
+        else {
+            problems = ODProblems.findAllByWorklogsIsNotNull()
+        }
+        render (view: "index", model: [problems: problems, initialFilter: params.id])
+    }
     def doUpload() {
         def file = params.prbFile
         if (file.empty) {

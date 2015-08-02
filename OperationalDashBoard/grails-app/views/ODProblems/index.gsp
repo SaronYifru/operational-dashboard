@@ -25,33 +25,33 @@
             src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.js"></script>
 
     <script type="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/"></script>
-    <asset:stylesheet src="OperationalDashboard/homeStyle2.css"/>
-    <asset:stylesheet src="OperationalDashboard/homeStyle.css"/>
-    <asset:stylesheet src="OperationalDashboard/dataTable.css"/>
-    <asset:stylesheet src="OperationalDashboard/columnReorder.css"/>
-    <asset:stylesheet src="OperationalDashboard/jquery-ui.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle2.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle.css"/>
+    <asset:stylesheet src="operationaldashboard/dataTable.css"/>
+    <asset:stylesheet src="operationaldashboard/columnReorder.css"/>
+    <asset:stylesheet src="operationaldashboard/jquery-ui.css"/>
 
     %{--<asset:javascript src="expandableTable.js"/>--}%
-    <asset:stylesheet src="OperationalDashboard/expandableTable.css"/>
+    <asset:stylesheet src="operationaldashboard/expandableTable.css"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="columnFilter.js"/>
     <asset:javascript src="dataTablesResponsive.js"/>
     <asset:javascript src="columnResize.js"/>
     <asset:javascript src="columnVis.js"/>
     <asset:javascript src="datatables-bootstrap.js"/>
-    <asset:stylesheet src="OperationalDashboard/columnVis.css"/>
-    <asset:stylesheet src="OperationalDashboard/dataTablesResponsive.css"/>
-    <asset:stylesheet src="OperationalDashboard/datatables-jquery-ui.css"/>
-    <asset:stylesheet src="OperationalDashboard/datatables-bootstrap.css"/>
+    <asset:stylesheet src="operationaldashboard/columnVis.css"/>
+    <asset:stylesheet src="operationaldashboard/dataTablesResponsive.css"/>
+    <asset:stylesheet src="operationaldashboard/datatables-jquery-ui.css"/>
+    <asset:stylesheet src="operationaldashboard/datatables-bootstrap.css"/>
     <asset:javascript src="jquery-datatable.js"/>
     <asset:javascript src="jquery-ui.js"/>
 
-    <title>OPD - Activities</title>
+    <title>OPD - Problems</title>
 </head>
 
 <body>
 <script>
-    function format ( d ) {
+    function format ( d, ticket ) {
         // `d` is the original data object for the row
 
         var t = '<div class="slider">'+
@@ -72,7 +72,11 @@
                     '<td>' + d[i].summary +'</td>'+
                     '</tr>'
         }
-        t = t.concat('</tbody>' +
+        var url = "https://gsm.mastercard.com/maximo/ui/maximo.jsp?event=loadapp&value=problem&additionalevent=useqbe&additionaleventvalue=ticketid=" + ticket
+        var additionalInfo = '<a href=' + url + '>'
+                + 'View Ticket In GSM' + '</a>'
+        var tFoot = '<tfoot>' + '<tr>' + '<td>' + additionalInfo + '</td>' + '</tr>' + '</tfoot>'
+        t = t.concat('</tbody>' + tFoot +
                 '</table>' + '</div>') ;
 
         return t
@@ -80,8 +84,10 @@
 
     var table
     var worklogsData
-    function showWorklog(worklogs) {
+    var ticket
+    function showWorklog(worklogs, ticketID) {
         worklogsData = worklogs
+        ticket = ticketID
     }
     $(document).ready(function () {
         table = $('#problemsTable').dataTable({
@@ -147,7 +153,7 @@
             }
             else {
 
-                row.child( format(worklogsData), 'no-padding' ).show();
+                row.child( format(worklogsData, ticket), 'no-padding' ).show();
                 tr.addClass('shown');
 
                 $('div.slider', row.child()).slideDown();

@@ -17,10 +17,10 @@
 
     <script
             src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.js"></script>
-    <asset:stylesheet src="OperationalDashboard/homeStyle2.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle2.css"/>
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <asset:stylesheet src="OperationalDashboard/fileUpload.css"/>
+    <asset:stylesheet src="operationaldashboard/fileUpload.css"/>
     <asset:javascript src="fileUpload.js"/>
     <script encodeAs="none">
         $.fn.editable.defaults.mode = 'inline';

@@ -153,7 +153,9 @@
             piesvg.selectAll("path").data(pie(pD)).enter().append("path").attr("d", arc)
                     .each(function(d) { this._current = d; })
                     .style("fill", function(d) { return segColor(d.data.State); })
-                    .on("mouseover",mouseover).on("mouseout",mouseout);
+                    .on("mouseover",mouseover)
+                    .on("mouseout",mouseout)
+                    .on("click", onClick);
 
             // create function to update pie-chart. This will be used by histogram.
             pC.update = function(nD){
@@ -169,6 +171,16 @@
 
 
             }
+
+            //Utility function to be called on click a pie slice
+            function onClick(d) {
+                console.log("On Click pie chart")
+                mouseout(d)
+                window.location.href = "${createLink()}/../../" + id + "/getTicketsByWorklog/" + d.data.State
+
+
+            }
+
             // Utility function to be called on mouseover a pie slice.
             function mouseover(d){
                 // call the update function of histogram with new data.
@@ -247,15 +259,7 @@
                         d3.select(this).style('background-color', color(i));
                         d3.select(this).text(function (d) {return d[0]})
                     })
-                    .on('mouseover', function (id) {
 
-                    })
-                    .on('mouseout', function (id) {
-//                        chart.revert();
-                    })
-                    .on('click', function (id) {
-//                        chart.toggle(id);
-                    });
 
 
         }

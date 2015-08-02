@@ -20,8 +20,8 @@
 
     <script type="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/"></script>
 
-    <asset:stylesheet src="OperationalDashboard/homeStyle2.css"/>
-    <asset:stylesheet src="OperationalDashboard/homeStyle.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle2.css"/>
+    <asset:stylesheet src="operationaldashboard/homeStyle.css"/>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <title>Operational Dashboard</title>
     <style>

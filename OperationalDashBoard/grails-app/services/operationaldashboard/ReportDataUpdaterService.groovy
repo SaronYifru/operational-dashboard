@@ -18,6 +18,8 @@ class ReportDataUpdaterService {
     public static String FORMAT5 = "yyyy-MM-dd hh:mm:ss"
     static String ACT_TICKET_ID = "Activity"
     static String PRB_TICKET_ID = "Problem"
+    static String INC_TICKET_ID = "Incident"
+    static String RELATED_RECORD_KEY = "Related Record Key"
     static String SUMMARY = "Summary"
     static String PRIORITY = "Priority"
     static String STATUS = "Status"
@@ -62,6 +64,7 @@ class ReportDataUpdaterService {
     int rowIndex
     HashMap<String, Integer> actColumnIndexes
     HashMap<String, Integer> prbColumnIndexes
+    HashMap<String, Integer> incColumnIndexes
     HashMap<String, Integer> worklogColumnIndexes
     HashMap<String, Integer> specColumnIndexes
     File actCSV
@@ -81,16 +84,17 @@ class ReportDataUpdaterService {
 
     }
     def updateReports (){
-        incCsv = grailsApplication.mainContext.getResource("data/lsps_incidents.csv").file
+        incCsv = grailsApplication.mainContext.getResource("reports/lsps_incidents.csv").file
         recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
+        incColumnIndexes = parseColumns(recordsInc.get(3))
         parseINC()
-        actCSV = grailsApplication.mainContext.getResource("data/lsps_activities.csv").file
+        actCSV = grailsApplication.mainContext.getResource("reports/lsps_activities.csv").file
         recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
         actColumnIndexes = parseColumns(recordsAct.get(4))
 
         parseACT()
-        prbCSV = grailsApplication.mainContext.getResource("data/lsps_problems.csv").file
+        prbCSV = grailsApplication.mainContext.getResource("reports/lsps_problems.csv").file
         recordsPrb = CSVParser.parse(prbCSV, Charset.defaultCharset(),
                 CSVFormat.DEFAULT).getRecords()
         prbColumnIndexes = parseColumns(recordsPrb.get(4))
@@ -98,7 +102,7 @@ class ReportDataUpdaterService {
     }
 
     def initializeReports() {
-        ownersCsv = grailsApplication.mainContext.getResource("data/owners.csv").file
+        ownersCsv = grailsApplication.mainContext.getResource("reports/owners.csv").file
         recordsOwners = CSVParser.parse(ownersCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
         parseOwners()
         updateReports()
@@ -115,7 +119,6 @@ class ReportDataUpdaterService {
 
             CSVRecord csvRecord = recordsOwners.get(index)
             if(isValidRecord(csvRecord)) {
-                log.info(csvRecord)
                 def eID = csvRecord.get(ownerColumns.get("Person"))
                 def name = csvRecord.get(ownerColumns.get("Name")).trim().replaceAll("^\\s+", "")
                 new ODOwner(eID: eID, name: name).save(failOnError: true)
@@ -132,8 +135,12 @@ class ReportDataUpdaterService {
         for (int index = 0; index<numberOfRecords;index++) {
             CSVRecord csvRecord = recordsInc.get(index)
             if(isValidRecord(csvRecord) && csvRecord.get(0).matches(INC_TICKET_MATCHER) ) {
-                ODIncidents incident = ODIncidents.findOrCreateByTicketID(csvRecord.get(0))
-                String relatedRecord = csvRecord.get(4)
+                ODIncidents incident = ODIncidents.findByTicketID(csvRecord.get(incColumnIndexes.get(INC_TICKET_ID)).trim())
+                if (incident == null) {
+                    String ticketID = csvRecord.get(incColumnIndexes.get(INC_TICKET_ID)).trim()
+                    incident = new ODIncidents(ticketID: ticketID)
+                }
+                String relatedRecord = csvRecord.get(incColumnIndexes.get(RELATED_RECORD_KEY))
                 if(relatedRecord.matches(ACT_TICKET_MATCHER)) {
                     incident.setRelatedACT(relatedRecord)
                 }
@@ -209,18 +216,13 @@ class ReportDataUpdaterService {
                     }
                 }
                 else {
-                    targetFinish = new Date().parse(DATE_FORMAT1, csvRecord.get(prbColumnIndexes.get(TARGET_FINISH)))
+                    targetFinish = Date.parse(DATE_FORMAT1, csvRecord.get(prbColumnIndexes.get(TARGET_FINISH)))
                     use(groovy.time.TimeCategory) {
                         numberOfDaysOpen = (targetFinish - reportedDate).days
                     }
                 }
                 String priority = csvRecord.get(prbColumnIndexes.get(PRIORITY))
 
-
-                log.info(numberOfDaysOpen)
-
-
-//                Date statusDate = Date.parse(DATE_FORMAT2, csvRecord.get(11))
                 String ownerID = csvRecord.get(prbColumnIndexes.get(OWNER))
                 ODOwner owner
                 if (!ownerID.equals("") && !ownerID.equals(null)) {
@@ -277,7 +279,6 @@ class ReportDataUpdaterService {
 
             if (!csvRecord.get(i).equals("") && !csvRecord.get(i).equals(null)) {
                 columnIndexes.put(csvRecord.get(i), i)
-                log.info(csvRecord.get(i))
             }
 
         }
@@ -303,7 +304,6 @@ class ReportDataUpdaterService {
                 String id = csvRecord.get(actColumnIndexes.get(ACT_TICKET_ID))
                 String summary = csvRecord.get(actColumnIndexes.get(SUMMARY))
                 String status = csvRecord.get(actColumnIndexes.get(STATUS))
-                log.info(id)
                 String priority = csvRecord.get(actColumnIndexes.get(PRIORITY))
 //                String actualTime = parseColumn(csvRecord)
                 String ownerID = csvRecord.get(actColumnIndexes.get(OWNER))
@@ -382,7 +382,6 @@ class ReportDataUpdaterService {
             }
 
             String summary = record.get(worklogColumnIndexes.get(WORKLOG_SUMMARY));
-            log.info(summary)
             ODWorklog worklog = new ODWorklog(createdDate: date,summary:summary,createdBy:owner)
             logs.add(worklog);
             record = records.get(++rowIndex);
@@ -391,21 +390,6 @@ class ReportDataUpdaterService {
 
     }
 
-//    private HashMap<String, String> parseSpec(List<CSVRecord> records) {
-//        HashMap<String, String> specs = new HashMap<String, String>();
-//        rowIndex = rowIndex + 1
-//        if (!records.get(rowIndex).get(0).matches("(.*)All the specifications(.*)")) {
-//            return specs;
-//        }
-//        rowIndex = rowIndex + 2
-//        while (isValidRecord(records.get(rowIndex))) {
-//            String attribute = records.get(rowIndex).get(0)
-//            String value = records.get(rowIndex).get(12)
-//            specs.put(attribute, value)
-//            rowIndex++
-//        }
-//        return specs
-//    }
 //  This method parses a ticket's specifications
 //    Returns a map of specs
     private HashMap<String, String> parseSpec(List<CSVRecord> records) {
@@ -459,8 +443,8 @@ class ReportDataUpdaterService {
     }
 
     /* This function determines if a record (row) is empty or null
-	 * Returns Boolean
-	 * */
+    * Returns Boolean
+    * */
     private boolean isValidRecord(CSVRecord record) {
         if (record.get(0).equals("") || record.get(0).equals(null)) {
             return false;

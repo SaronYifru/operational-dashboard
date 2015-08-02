@@ -38,9 +38,18 @@ class ODActivitiesController {
     }
     def getTicketsByRequestType() {
         ODRequestType requestType = ODRequestType.findById(params.id)
-        ODThreshold threshold = ODThreshold.findByType(requestType)
-        def activities = ODActivities.findAllByRequestTypeAndNumberOfDaysOpenGreaterThanEquals(requestType, threshold.thresholdValue)
+        def activities = ODActivities.findAllByRequestTypeAndNumberOfDaysOpenGreaterThanEquals(requestType, requestType.thresholdValue)
         render (view: "index", model: [activities: activities, initialFilter:"Request Type: " + requestType.name])
+    }
+    def getTicketsByWorklog() {
+        def activities
+        if (params.id.equals("noWorklog")) {
+            activities = ODActivities.findAllByWorklogsIsNull()
+        }
+        else {
+            activities = ODActivities.findAllByWorklogsIsNotNull()
+        }
+        render (view: "index", model: [activities: activities, initialFilter: "No Worklogs"])
     }
     def doUpload() {
         def file = params.actFile

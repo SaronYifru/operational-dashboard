@@ -84,22 +84,9 @@ class BootStrap {
     def reportDataUpdaterService
     def init = { servletContext ->
           reportDataUpdaterService.initializeReports()
-//        runAsync {
-//            incCsv = new File("data/incidents.csv")
-//            recordsInc = CSVParser.parse(incCsv, Charset.defaultCharset(), CSVFormat.DEFAULT).getRecords()
-//            parseINC()
-//            actCSV = new File("data/activities2.csv")
-//            recordsAct = CSVParser.parse(actCSV, Charset.defaultCharset(),
-//                    CSVFormat.DEFAULT).getRecords()
-//            actColumnIndexes = parseColumns(recordsAct.get(4))
-//
-//            parseACT()
-//            prbCSV = new File("data/problems.csv")
-//            recordsPrb = CSVParser.parse(prbCSV, Charset.defaultCharset(),
-//                    CSVFormat.DEFAULT).getRecords()
-//            prbColumnIndexes = parseColumns(recordsPrb.get(4))
-//            parsePRB()
-//        }
+        runAsync {
+
+        }
     }
     def destroy = {
     }
